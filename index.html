@@ -1033,12 +1033,23 @@
             console.log('🚀 Access Wallet clicked!');
             console.log('tg object:', tg);
             
+            // Check if tg object is initialized
+            if (!tg) {
+                console.log('❌ Telegram WebApp not initialized yet');
+                alert('Please wait for the app to load completely, then try again.');
+                return;
+            }
+            
             const user = tg.initDataUnsafe?.user;
             console.log('User data:', user);
             
             if (!user) {
                 console.log('❌ No user data available');
-                tg.showAlert('Please open this Mini-App from within Telegram.');
+                if (tg.showAlert) {
+                    tg.showAlert('Please open this Mini-App from within Telegram.');
+                } else {
+                    alert('Please open this Mini-App from within Telegram.');
+                }
                 return;
             }
             
@@ -1186,17 +1197,35 @@
             const walletAddress = document.getElementById('walletAddress').textContent;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(walletAddress).then(() => {
-                    tg.showAlert('✅ Wallet address copied to clipboard!');
+                    if (tg && tg.showAlert) {
+                        tg.showAlert('✅ Wallet address copied to clipboard!');
+                    } else {
+                        alert('✅ Wallet address copied to clipboard!');
+                    }
                 }).catch(() => {
-                    tg.showAlert('Failed to copy address');
+                    if (tg && tg.showAlert) {
+                        tg.showAlert('Failed to copy address');
+                    } else {
+                        alert('Failed to copy address');
+                    }
                 });
             } else {
-                tg.showAlert('Tap and hold to copy');
+                if (tg && tg.showAlert) {
+                    tg.showAlert('Tap and hold to copy');
+                } else {
+                    alert('Tap and hold to copy');
+                }
             }
         }
 
         // Auto-show wallet for existing users after initialization
         function autoShowWallet() {
+            // Check if tg object is initialized
+            if (!tg) {
+                console.log('❌ Telegram WebApp not initialized yet - skipping auto-show');
+                return;
+            }
+            
             const user = tg.initDataUnsafe?.user;
             console.log('User data:', user);
             
