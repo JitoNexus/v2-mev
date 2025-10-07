@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JitoX V2 - Alpha Protocol</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>JitoX V2 Alpha Protocol</title>
     <style>
         * {
             margin: 0;
@@ -13,469 +12,698 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: #000;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        .main-container {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
             position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
         }
 
-        .main-image {
-            width: 100%;
-            height: 100vh;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        .particles-container {
-            position: absolute;
+        /* Background Effects */
+        .background-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
-            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            z-index: 0;
         }
 
-        .rain-particle {
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
             position: absolute;
             width: 2px;
-            height: 20px;
-            background: linear-gradient(to bottom, transparent, rgba(138, 43, 226, 0.8), transparent);
-            animation: rain-fall linear infinite;
+            height: 2px;
+            background: rgba(120, 219, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
         }
 
-        @keyframes rain-fall {
-            0% {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0; }
+            50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
         }
 
-        .content-box {
+        /* Main Container */
+        .main-container {
             position: relative;
-            z-index: 3;
+            z-index: 2;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             padding: 20px;
+            max-width: 100%;
         }
 
-        .message-text {
-            color: #ffffff;
-            font-size: 1.3em;
-            line-height: 1.8;
+        /* Header */
+        .header {
             text-align: center;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(138, 43, 226, 0.7);
-            max-width: 600px;
             margin-bottom: 30px;
+            padding: 20px 0;
         }
 
-        .wallet-button {
-            padding: 18px 45px;
-            font-size: 1.2em;
+        .logo {
+            font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #00ffff 0%, #8a2be2 100%);
-            color: #000000;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b7bc6 50%, #ff77c6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
         }
 
-        .wallet-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.9);
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
 
-        .wallet-button:active {
-            transform: translateY(0);
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 100%;
         }
 
-        /* Wallet Display */
-        .wallet-display {
-            display: none;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ffff;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
-        }
-
-        .wallet-display.active {
-            display: block;
+        /* Wallet Section */
+        .wallet-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .wallet-title {
-            font-size: 1.5em;
-            color: #00ffff;
-            text-align: center;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .wallet-info {
-            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .wallet-label {
-            color: #8a2be2;
-            font-size: 0.9em;
-            margin-bottom: 5px;
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
-        .wallet-value {
+        .info-value {
+            font-size: 0.95rem;
             color: #ffffff;
-            font-size: 1.1em;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
             word-break: break-all;
-            background: rgba(0, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        .wallet-value:hover {
-            background: rgba(0, 255, 255, 0.2);
-        }
-
-        .close-button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: rgba(138, 43, 226, 0.5);
-            color: #ffffff;
-            border: 1px solid #8a2be2;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .close-button:hover {
-            background: rgba(138, 43, 226, 0.7);
-        }
-
-        .loading-text {
-            color: #8a2be2;
-            font-style: italic;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .tier-section {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(138, 43, 226, 0.1);
-            border: 1px solid #8a2be2;
-            border-radius: 10px;
-        }
-
-        .tier-title {
-            color: #00ffff;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .tier-options {
-            display: grid;
-            gap: 10px;
-        }
-
-        .tier-option {
-            padding: 15px;
-            background: rgba(0, 255, 255, 0.05);
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tier-option:hover {
-            border-color: #00ffff;
-            background: rgba(0, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .tier-name {
-            color: #00ffff;
-            font-weight: 700;
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-
-        .tier-amount {
-            color: #ff00ff;
-            font-size: 1.3em;
-            font-weight: 900;
-            margin-bottom: 5px;
-        }
-
-        .tier-desc {
-            color: #cccccc;
-            font-size: 0.9em;
-        }
-
-        .deposit-instructions {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 255, 255, 0.05);
-            border-left: 3px solid #00ffff;
-            border-radius: 5px;
-        }
-
-        .deposit-step {
-            color: #ffffff;
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .deposit-step strong {
-            color: #00ffff;
+        .info-value:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.4);
         }
 
         .copy-hint {
-            color: #8a2be2;
-            font-size: 0.85em;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
             text-align: center;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
+        /* Tier Selection */
+        .tier-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .tier-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tier-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tier-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tier-card:hover::before {
+            left: 100%;
+        }
+
+        .tier-card:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .tier-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tier-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .tier-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        .tier-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff77c6;
+            margin-bottom: 8px;
+        }
+
+        .tier-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Deposit Instructions */
+        .deposit-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        .deposit-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .deposit-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #00d4ff, #7b7bc6);
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-text {
+            font-size: 0.95rem;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        .step-highlight {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: rgba(255, 119, 198, 0.1);
+            border: 1px solid rgba(255, 119, 198, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .warning-text {
+            color: #ff77c6;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .success-text {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Buttons */
+        .button {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b7bc6 100%);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Hidden elements */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile optimizations */
         @media (max-width: 768px) {
-            .message-text {
-                font-size: 1.1em;
+            .main-container {
+                padding: 16px;
             }
-            
-            .wallet-button {
-                font-size: 1em;
-                padding: 15px 35px;
+
+            .logo {
+                font-size: 2rem;
             }
+
+            .wallet-section,
+            .tier-section,
+            .deposit-section {
+                padding: 20px;
+            }
+
+            .tier-card {
+                padding: 16px;
+            }
+
+            .step {
+                padding: 12px;
+            }
+
+            .button {
+                padding: 14px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 12px;
+            }
+
+            .logo {
+                font-size: 1.75rem;
+            }
+
+            .wallet-section,
+            .tier-section,
+            .deposit-section {
+                padding: 16px;
+            }
+
+            .tier-amount {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-top: 2px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <div class="background-overlay"></div>
+    <div class="particles-container" id="particles"></div>
+
     <div class="main-container">
-        <img src="MAIN SCREEN.jpg" alt="JitoX" class="main-image">
-        <div class="particles-container" id="particles"></div>
-        
-        <div class="content-box">
-            <p class="message-text" id="mainMessage">
-                Run the bot in Telegram chat and add trading balance to access the Mini-App
-            </p>
-            <button class="wallet-button" id="walletButton" onclick="handleWalletClick()">
-                DEPLOY WALLET
-            </button>
-            
-            <div class="wallet-display" id="walletDisplay">
-                <div class="wallet-title">🐺 Your Alpha Wallet</div>
-                <div class="wallet-info">
-                    <div class="wallet-label">Wallet Address</div>
-                    <div class="wallet-value" id="walletAddress" onclick="copyToClipboard('walletAddress')">
-                        Loading...
-                    </div>
-                    <div class="copy-hint">👆 Tap to copy</div>
+        <div class="header">
+            <div class="logo">JitoX V2</div>
+            <div class="subtitle">Alpha Protocol</div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="wallet-section" id="walletSection">
+                <div class="wallet-title">
+                    <span>🔑</span>
+                    <span>Your Alpha Wallet</span>
                 </div>
                 <div class="wallet-info">
-                    <div class="wallet-label">User ID</div>
-                    <div class="wallet-value" id="userId">
-                        Loading...
-                    </div>
-                </div>
-                <div class="wallet-info">
-                    <div class="wallet-label">Username</div>
-                    <div class="wallet-value" id="username">
-                        Loading...
-                    </div>
-                </div>
-                
-                <div class="tier-section">
-                    <div class="tier-title">⚡ Select Your Tier</div>
-                    <div class="tier-options">
-                        <div class="tier-option" onclick="selectTier(3)">
-                            <div class="tier-name">💎 ALPHA HUNTER</div>
-                            <div class="tier-amount">3 SOL</div>
-                            <div class="tier-desc">Basic MEV Operations</div>
+                    <div class="info-row">
+                        <div class="info-label">Wallet Address</div>
+                        <div class="info-value" id="walletAddress" onclick="copyToClipboard('walletAddress')">
+                            Loading...
                         </div>
-                        <div class="tier-option" onclick="selectTier(5)">
-                            <div class="tier-name">⚔️ ALPHA NEXUS</div>
-                            <div class="tier-amount">5 SOL</div>
-                            <div class="tier-desc">Advanced Protocols</div>
-                        </div>
-                        <div class="tier-option" onclick="selectTier(10)">
-                            <div class="tier-name">🔥 ALPHA JITO</div>
-                            <div class="tier-amount">10 SOL</div>
-                            <div class="tier-desc">Elite Operations</div>
-                        </div>
+                        <div class="copy-hint">Tap to copy</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">User ID</div>
+                        <div class="info-value" id="userId">Loading...</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Username</div>
+                        <div class="info-value" id="username">Loading...</div>
                     </div>
                 </div>
-                
-                <div class="deposit-instructions" id="depositInstructions" style="display: none;">
-                    <div class="tier-title">💰 How to Deposit</div>
-                    <div class="deposit-step">
-                        <strong>Step 1:</strong> Copy your wallet address above (tap on it)
-                    </div>
-                    <div class="deposit-step">
-                        <strong>Step 2:</strong> Send <strong id="depositAmount">3 SOL</strong> to your wallet from any exchange or wallet
-                    </div>
-                    <div class="deposit-step">
-                        <strong>Step 3:</strong> Wait 1-2 minutes for confirmation
-                    </div>
-                    <div class="deposit-step" style="color: #ff00ff; font-weight: 700;">
-                        ⚠️ IMPORTANT: Only send SOL (not USDC or other tokens)
-                    </div>
-                    <div class="deposit-step" style="color: #00ffff;">
-                        ✅ After deposit, your tier activates automatically in the bot!
-                    </div>
-                </div>
-                
-                <button class="close-button" onclick="closeWallet()">Close</button>
             </div>
+
+            <div class="tier-section">
+                <div class="tier-title">Select Your Tier</div>
+                <div class="tier-grid">
+                    <div class="tier-card" onclick="selectTier(3)">
+                        <div class="tier-header">
+                            <div class="tier-icon">💎</div>
+                            <div class="tier-name">Alpha Hunter</div>
+                        </div>
+                        <div class="tier-amount">3 SOL</div>
+                        <div class="tier-description">Basic MEV Operations</div>
+                    </div>
+                    <div class="tier-card" onclick="selectTier(5)">
+                        <div class="tier-header">
+                            <div class="tier-icon">⚔️</div>
+                            <div class="tier-name">Alpha Nexus</div>
+                        </div>
+                        <div class="tier-amount">5 SOL</div>
+                        <div class="tier-description">Advanced Protocols</div>
+                    </div>
+                    <div class="tier-card" onclick="selectTier(10)">
+                        <div class="tier-header">
+                            <div class="tier-icon">🔥</div>
+                            <div class="tier-name">Alpha Jito</div>
+                        </div>
+                        <div class="tier-amount">10 SOL</div>
+                        <div class="tier-description">Elite Operations</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deposit-section hidden" id="depositSection">
+                <div class="deposit-title">
+                    <span>💰</span>
+                    <span>How to Deposit</span>
+                </div>
+                <div class="deposit-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-text">
+                                Copy your <span class="step-highlight">wallet address</span> above (tap on it)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-text">
+                                Send <span class="step-highlight" id="depositAmount">3 SOL</span> to your wallet from any exchange or wallet
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-text">
+                                Wait 1-2 minutes for confirmation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="warning">
+                    <div class="warning-text">
+                        <span>⚠️</span>
+                        <span>IMPORTANT: Only send SOL (not USDC or other tokens)</span>
+                    </div>
+                </div>
+                <div class="success">
+                    <div class="success-text">
+                        <span>✅</span>
+                        <span>After deposit, your tier activates automatically in the bot!</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="button" id="mainButton" onclick="handleMainButton()">
+                Deploy Wallet
+            </button>
+
+            <button class="close-button hidden" id="closeButton" onclick="closeWallet()">
+                Close
+            </button>
         </div>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
+        const WALLET_DATA = [
+            // This will be populated by the Python script
+        ];
+
+        const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        // Wallet data from CSV - This will be embedded directly
-        const WALLET_DATA = [
-            {"user_id":"7828686818","public_key":"Bs4sSxdjifMMbSzWhDNawS9KpsxF6EGUce9M9nvKfyN2","username":"Jitoxai"},
-            {"user_id":"7902168626","public_key":"C3NNRB5ZSe1xqASWyP2qqwUdPry5ndz5HQgctZ7ba2b6","username":"CabalSupport"},
-            {"user_id":"6087957412","public_key":"CcUyNNt6o8x85bYy2nSUhs2jsnzxAMT4BiDHJGqafu6o","username":"Robb"},
-            {"user_id":"5346217155","public_key":"BMiDqRGLhJpnT9coUtuMhsmxQTtmCCWhNhcGNSBHmxFW","username":"ryangt33"},
-            {"user_id":"7700322235","public_key":"FUWzgXippjeLRaKQVRYArSC9oGKLrhtTmVKvf72N25e1","username":"Horatio"},
-            {"user_id":"7187477901","public_key":"3bAxaDTKSp8DZRxmDgyrFjhHBKiEUKyRCXYGthRhoeLk","username":"zaiaiq"},
-            {"user_id":"1438474349","public_key":"9rD7fDhZd5u56VNZ66JgwhdqhMfKePpCLAu7LEahn7kk","username":"Swqvv"},
-            {"user_id":"7014136530","public_key":"2G6sbiuHuYPNt94Xm5qeDvsvyXXR3jyMwK9YvXmo4QH7","username":"tesUsers"},
-            {"user_id":"5177278495","public_key":"F72Zyoo9yQ5wyC1YEBK2D2AYiWXb3bPfJFsL7zR2kXf7","username":"Chef_222"},
-            {"user_id":"6005142834","public_key":"DcdRqWUudC7KHgNWn7L5AWk3WxDfZaMpvsMT9zXcaSob","username":"Ebn_alseed"},
-            {"user_id":"7549225560","public_key":"8RCUTeJjYEHUGggVYcKGBkoPUsFXCwE7M3kRz9RzBbCS","username":"Gorillaz0mac"},
-            {"user_id":"8407324489","public_key":"9Dj6fvqV3am36SKZ5bQ2aEmMM2niUq8RDBcvP2j6dQ4N","username":"finizzo"},
-            {"user_id":"7614387768","public_key":"3xstzgDJQA8XQvgxyrEKhSz1r2XKqDwijJPzBQ6U7RbB","username":"bang1951"},
-            {"user_id":"6538629209","public_key":"Es2LvSE6doCFcYYc2Nc7pjXcD56DRPNsjhQjPWf4oTcy","username":"Amalia_70678bb01"},
-            {"user_id":"7009676989","public_key":"29zCkK1p5XvFc7gfdwmVGzEdwubZYLgLw12MbTy97PrE","username":"Alejomal"},
-            {"user_id":"1632930121","public_key":"3vcfU74XNca8iNx3hZzap1hSJU3vAQa1cmGjzwMpZ7HX","username":"joestime"},
-            {"user_id":"7688643327","public_key":"HwWASreUmGHG98qyBt9VKtr3gREMV1ZCdNNGSyhmqy6p","username":"kingfuego420"},
-            {"user_id":"1379952557","public_key":"3YGJ1bBoYu1Mx2qzxUFGkdWJZbH3H1Q5omqTy2TrxMAN","username":"monocledeveloper"},
-            {"user_id":"6521363444","public_key":"Gzc7pYNrKssaSzzR3yudMDJraAyTYmn9umm6wVQahBZ8","username":"M."},
-            {"user_id":"7082355558","public_key":"2YMj4e19sMzwV6N2ykSu64qpYBdxDwTyKhNTzuNAjL9c","username":"Amirsam051"},
-            {"user_id":"6732924585","public_key":"ADYHuDRHGhmQHb9yYhWBzcGExEVwQE26DFRYcuLiYuFH","username":"moan_mone"},
-            {"user_id":"6523823230","public_key":"965qN1oK5yZGWcNEACn8zXVRpATQHyz3x5G4x7DvJJPF","username":"Msh0009"},
-            {"user_id":"7862582729","public_key":"GCv9oaSipoTtizUweeyBMcRTW44JjbEsRjYQEiVeV7RP","username":"cryptopumper123"},
-            {"user_id":"953865133","public_key":"JBXJgDxYDvARtiVVktpr59kUaFtcJmVADVprmPQ2YJ12","username":"furnaoff"},
-            {"user_id":"6418022769","public_key":"DVg1V744bQvQQhVQPBw1SyNqfhJLR2uzkFZXLT4KNeRQ","username":"Cash_MoneyBaby"},
-            {"user_id":"6351458057","public_key":"FE1C5nS1bzxU2dQXLXmGsAv4xpZQNbSTo1K38osoybx6","username":"Bigal230783"},
-            {"user_id":"1809464770","public_key":"DzZZT5AaMwZrjmjZC9ccH5ES4nMgUrs1gNSRgURAdxoL","username":"kambiz09"},
-            {"user_id":"6426825526","public_key":"4Ppko5M2aunqDNjPDEZSesuAgJ6o7bqNNAAa9gJKwUzJ","username":"B_Cloning"},
-            {"user_id":"5733188130","public_key":"CjQp1pWgJA3bTqZXADHtSSfuyVRbERntP35xm8MqaFMw","username":"bread515"},
-            {"user_id":"1384635147","public_key":"EwqJkerH2DJwZScs9U1uET1YMsBNRu8263UC5y49zUGv","username":"kouroshthecreator"},
-            {"user_id":"8251358988","public_key":"9EnbaVoFqvh4vjz5GWzoo5ZSQp2soxp3n4wNjmKSqepA","username":"Tossedbread"},
-            {"user_id":"1097600241","public_key":"4Q38C4hXfUqHPvp8bXFJYjdi2ApDCBjFstYbVAo1Jj4n","username":"sharmaishaan72"},
-            {"user_id":"6792427932","public_key":"48vi5b5kdXTmxmaPG9gfFtoFT9PqAKedcxoqyvXbEoYw","username":"Etharbas1"},
-            {"user_id":"7828686818","public_key":"2dtd4iBhBTydCWWr5EwA22TZW6qZBvVG7qC5x25jb2rM","username":"Jitoxai"},
-            {"user_id":"7828686818","public_key":"8ZkRRoqG5g93wvXUQj1LfyHQUEwej2Fempg98cMUuxtU","username":"Jitoxai"},
-            {"user_id":"6391586134","public_key":"JCT3UKgwsCxrjVEMh6SGBFkw2tiRky2xMp1H7YvqEZZ3","username":"Igorbullish"},
-            {"user_id":"966972040","public_key":"2FY2ocuXbq7HmUX6aDbZNYYjZwh6egPdhrg9pkf7cAxj","username":"𔓛‎𔑮 Orzb 𔑮𔓛‎"},
-            {"user_id":"7041570418","public_key":"2sEMJXh7bQd1XjcikybF6iVPm5DpnjJtbxXKXpvSj9pD","username":"Woodman190"}
-        ];
+        // Particle system
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
 
-        // Simple rain particle system
-        class ParticleSystem {
-            constructor() {
-                this.container = document.getElementById('particles');
-                this.createParticles();
-            }
-
-            createParticle() {
+            for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
-                particle.className = 'rain-particle';
+                particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                this.container.appendChild(particle);
-            }
-
-            createParticles() {
-                for (let i = 0; i < 50; i++) {
-                    this.createParticle();
-                }
-            }
-
-            updateParticles() {
-                if (Math.random() < 0.1) {
-                    this.createParticle();
-                }
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(particle);
             }
         }
 
-        const particleSystem = new ParticleSystem();
-        setInterval(() => particleSystem.updateParticles(), 100);
+        // Initialize particles
+        createParticles();
 
-        // Wallet functions
-        function handleWalletClick() {
+        // Main button handler
+        function handleMainButton() {
             const user = tg.initDataUnsafe?.user;
-            
-            if (!user || !user.id) {
-                tg.showAlert('Unable to get user data. Please open this from the bot.');
+            if (!user) {
+                tg.showAlert('Please open this Mini-App from within Telegram.');
                 return;
             }
 
-            const userId = String(user.id);
-            const walletData = WALLET_DATA.find(w => w.user_id === userId);
+            const userId = user.id.toString();
+            const username = user.username || user.first_name || 'Anonymous';
+            
+            let userWallet = WALLET_DATA.find(w => w.user_id === userId);
 
-            if (walletData) {
-                // User has a wallet - show it
-                document.getElementById('walletAddress').textContent = walletData.public_key;
-                document.getElementById('userId').textContent = walletData.user_id;
-                document.getElementById('username').textContent = '@' + (walletData.username || 'Unknown');
-                document.getElementById('walletButton').style.display = 'none';
-                document.getElementById('mainMessage').style.display = 'none';
-                document.getElementById('walletDisplay').classList.add('active');
+            if (userWallet) {
+                // Existing user - show wallet info
+                displayWalletInfo(userWallet, username);
             } else {
-                // User doesn't have a wallet - need to create one via bot
-                tg.showAlert('No wallet found! Please use /get_wallet command in the bot to create your wallet first.');
+                // New user - prompt to run bot
+                tg.showAlert(
+                    `Welcome, ${username}!\n\n` +
+                    'To deploy your secure wallet, please run the bot in Telegram chat:\n\n' +
+                    '@jitoxmev_bot\n\n' +
+                    'After deploying, click this button again to access your wallet.'
+                );
             }
         }
 
-        function closeWallet() {
-            document.getElementById('walletDisplay').classList.remove('active');
-            document.getElementById('walletButton').style.display = 'block';
-            document.getElementById('mainMessage').style.display = 'block';
+        // Display wallet information
+        function displayWalletInfo(wallet, username) {
+            document.getElementById('walletAddress').textContent = wallet.public_key;
+            document.getElementById('userId').textContent = wallet.user_id;
+            document.getElementById('username').textContent = wallet.username || username;
+            
+            document.getElementById('mainButton').classList.add('hidden');
+            document.getElementById('closeButton').classList.remove('hidden');
+            document.getElementById('walletSection').classList.remove('hidden');
         }
 
+        // Select tier
+        function selectTier(amount) {
+            document.getElementById('depositAmount').textContent = amount + ' SOL';
+            document.getElementById('depositSection').classList.remove('hidden');
+            
+            // Smooth scroll to deposit section
+            document.getElementById('depositSection').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Show confirmation
+            const tierNames = {
+                3: 'Alpha Hunter',
+                5: 'Alpha Nexus',
+                10: 'Alpha Jito'
+            };
+            
+            tg.showAlert(`Selected: ${tierNames[amount]}\n\nDeposit ${amount} SOL to your wallet address to activate this tier!`);
+        }
+
+        // Copy to clipboard
         function copyToClipboard(elementId) {
             const text = document.getElementById(elementId).textContent;
             if (navigator.clipboard) {
@@ -489,32 +717,24 @@
             }
         }
 
-        function selectTier(amount) {
-            // Show deposit instructions
-            document.getElementById('depositAmount').textContent = amount + ' SOL';
-            document.getElementById('depositInstructions').style.display = 'block';
-            
-            // Scroll to instructions
-            document.getElementById('depositInstructions').scrollIntoView({ behavior: 'smooth' });
-            
-            // Show confirmation
-            const tierNames = {
-                3: '💎 ALPHA HUNTER',
-                5: '⚔️ ALPHA NEXUS',
-                10: '🔥 ALPHA JITO'
-            };
-            
-            tg.showAlert(`Selected: ${tierNames[amount]}\n\nDeposit ${amount} SOL to your wallet address to activate this tier!`);
+        // Close wallet
+        function closeWallet() {
+            document.getElementById('walletSection').classList.add('hidden');
+            document.getElementById('depositSection').classList.add('hidden');
+            document.getElementById('mainButton').classList.remove('hidden');
+            document.getElementById('closeButton').classList.add('hidden');
         }
 
-        // Update button text based on user
+        // Initialize on load
         window.addEventListener('load', () => {
             const user = tg.initDataUnsafe?.user;
             if (user && user.id) {
-                const userId = String(user.id);
-                const walletData = WALLET_DATA.find(w => w.user_id === userId);
-                if (walletData) {
-                    document.getElementById('walletButton').textContent = 'ACCESS WALLET';
+                const userId = user.id.toString();
+                const userWallet = WALLET_DATA.find(w => w.user_id === userId);
+                
+                if (userWallet) {
+                    // Auto-show wallet for existing users
+                    displayWalletInfo(userWallet, user.username || user.first_name);
                 }
             }
         });
