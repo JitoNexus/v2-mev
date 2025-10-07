@@ -1460,6 +1460,11 @@
                 checkbox.addEventListener('change', updateVerifyButtonState);
             }
         });
+
+        // Initialize Telegram WebApp immediately when script loads
+        console.log('🚀 Script loaded, initializing Telegram WebApp...');
+        console.log('Telegram WebApp available:', !!window.Telegram?.WebApp);
+        initializeTelegramWebApp();
     </script>
 </body>
 </html>
