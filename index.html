@@ -83,7 +83,7 @@
         
         /* Access Wallet Button Styles */
         .access-button {
-            --green: #1BFD9C;
+            --purple: #8B5CF6;
             font-size: 15px;
             padding: 0.7em 2.7em;
             letter-spacing: 0.06em;
@@ -93,17 +93,17 @@
             overflow: hidden;
             transition: all 0.3s;
             line-height: 1.4em;
-            border: 2px solid var(--green);
-            background: linear-gradient(to right, rgba(27, 253, 156, 0.1) 1%, transparent 40%,transparent 60% , rgba(27, 253, 156, 0.1) 100%);
-            color: var(--green);
-            box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.4), 0 0 9px 3px rgba(27, 253, 156, 0.1);
+            border: 2px solid var(--purple);
+            background: linear-gradient(to right, rgba(139, 92, 246, 0.1) 1%, transparent 40%,transparent 60% , rgba(139, 92, 246, 0.1) 100%);
+            color: var(--purple);
+            box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.4), 0 0 9px 3px rgba(139, 92, 246, 0.1);
             cursor: pointer;
             margin-top: 20px;
         }
         
         .access-button:hover {
-            color: #82ffc9;
-            box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.6), 0 0 9px 3px rgba(27, 253, 156, 0.2);
+            color: #C4B5FD;
+            box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.6), 0 0 9px 3px rgba(139, 92, 246, 0.2);
         }
         
         .access-button:before {
@@ -114,7 +114,7 @@
             height: 100%;
             top: 0;
             transition: transform .4s ease-in-out;
-            background: linear-gradient(to right, transparent 1%, rgba(27, 253, 156, 0.1) 40%,rgba(27, 253, 156, 0.1) 60% , transparent 100%);
+            background: linear-gradient(to right, transparent 1%, rgba(139, 92, 246, 0.1) 40%,rgba(139, 92, 246, 0.1) 60% , transparent 100%);
         }
         
         .access-button:hover:before {
@@ -133,9 +133,9 @@
     <div class="content-wrapper">
         <!-- Initial State: User Stats with 0 balance -->
         <div id="initialState">
-            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/80 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
-                <div class="absolute inset-px rounded-[11px] bg-slate-950/80"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
 
                 <div class="relative">
                     <div class="mb-4 flex items-center justify-between">
@@ -203,13 +203,31 @@
             <button class="access-button" onclick="accessWallet()">
                 Access Wallet
             </button>
+            
+            <script>
+                // Test button click
+                console.log('Button element:', document.querySelector('.access-button'));
+                document.addEventListener('DOMContentLoaded', function() {
+                    const button = document.querySelector('.access-button');
+                    if (button) {
+                        console.log('Button found and ready');
+                        button.addEventListener('click', function(e) {
+                            console.log('Button clicked via event listener');
+                            e.preventDefault();
+                            accessWallet();
+                        });
+                    } else {
+                        console.log('Button not found');
+                    }
+                });
+            </script>
         </div>
 
         <!-- Wallet State: User has wallet -->
         <div id="walletState" class="hidden">
-            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/80 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
-                <div class="absolute inset-px rounded-[11px] bg-slate-950/80"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
 
                 <div class="relative">
                     <div class="mb-4 flex items-center justify-between">
@@ -337,20 +355,30 @@
 
         // Access wallet function
         function accessWallet() {
+            console.log('Access Wallet button clicked');
+            
             const user = tg.initDataUnsafe?.user;
+            console.log('User data:', user);
+            
             if (!user) {
                 tg.showAlert('Please open this Mini-App from within Telegram.');
                 return;
             }
 
             const userId = user.id.toString();
+            console.log('Looking for user ID:', userId);
+            console.log('Available wallets:', WALLET_DATA.length);
+            
             let userWallet = WALLET_DATA.find(w => w.user_id === userId);
+            console.log('Found wallet:', userWallet);
 
             if (userWallet) {
                 // Show wallet state
+                console.log('Showing wallet state for user:', userWallet.username);
                 showWalletState(userWallet, user.username || user.first_name);
             } else {
                 // New user - guide to use /get_wallet
+                console.log('No wallet found, showing alert');
                 tg.showAlert(
                     `Welcome, ${user.username || user.first_name || 'User'}!\n\n` +
                     'No wallet found. Please use the /get_wallet command in the bot chat to deploy your wallet first.\n\n' +
