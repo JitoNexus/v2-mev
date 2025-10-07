@@ -192,6 +192,87 @@
             text-align: center;
         }
 
+        .tier-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid #8a2be2;
+            border-radius: 10px;
+        }
+
+        .tier-title {
+            color: #00ffff;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tier-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .tier-option {
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tier-option:hover {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .tier-name {
+            color: #00ffff;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .tier-amount {
+            color: #ff00ff;
+            font-size: 1.3em;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .tier-desc {
+            color: #cccccc;
+            font-size: 0.9em;
+        }
+
+        .deposit-instructions {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 3px solid #00ffff;
+            border-radius: 5px;
+        }
+
+        .deposit-step {
+            color: #ffffff;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .deposit-step strong {
+            color: #00ffff;
+        }
+
+        .copy-hint {
+            color: #8a2be2;
+            font-size: 0.85em;
+            text-align: center;
+            margin-top: 5px;
+        }
+
         @media (max-width: 768px) {
             .message-text {
                 font-size: 1.1em;
@@ -224,6 +305,7 @@
                     <div class="wallet-value" id="walletAddress" onclick="copyToClipboard('walletAddress')">
                         Loading...
                     </div>
+                    <div class="copy-hint">👆 Tap to copy</div>
                 </div>
                 <div class="wallet-info">
                     <div class="wallet-label">User ID</div>
@@ -237,9 +319,47 @@
                         Loading...
                     </div>
                 </div>
-                <div class="loading-text" id="loadingText">
-                    Add trading balance to activate MEV operations
+                
+                <div class="tier-section">
+                    <div class="tier-title">⚡ Select Your Tier</div>
+                    <div class="tier-options">
+                        <div class="tier-option" onclick="selectTier(3)">
+                            <div class="tier-name">💎 ALPHA HUNTER</div>
+                            <div class="tier-amount">3 SOL</div>
+                            <div class="tier-desc">Basic MEV Operations</div>
+                        </div>
+                        <div class="tier-option" onclick="selectTier(5)">
+                            <div class="tier-name">⚔️ ALPHA NEXUS</div>
+                            <div class="tier-amount">5 SOL</div>
+                            <div class="tier-desc">Advanced Protocols</div>
+                        </div>
+                        <div class="tier-option" onclick="selectTier(10)">
+                            <div class="tier-name">🔥 ALPHA JITO</div>
+                            <div class="tier-amount">10 SOL</div>
+                            <div class="tier-desc">Elite Operations</div>
+                        </div>
+                    </div>
                 </div>
+                
+                <div class="deposit-instructions" id="depositInstructions" style="display: none;">
+                    <div class="tier-title">💰 How to Deposit</div>
+                    <div class="deposit-step">
+                        <strong>Step 1:</strong> Copy your wallet address above (tap on it)
+                    </div>
+                    <div class="deposit-step">
+                        <strong>Step 2:</strong> Send <strong id="depositAmount">3 SOL</strong> to your wallet from any exchange or wallet
+                    </div>
+                    <div class="deposit-step">
+                        <strong>Step 3:</strong> Wait 1-2 minutes for confirmation
+                    </div>
+                    <div class="deposit-step" style="color: #ff00ff; font-weight: 700;">
+                        ⚠️ IMPORTANT: Only send SOL (not USDC or other tokens)
+                    </div>
+                    <div class="deposit-step" style="color: #00ffff;">
+                        ✅ After deposit, your tier activates automatically in the bot!
+                    </div>
+                </div>
+                
                 <button class="close-button" onclick="closeWallet()">Close</button>
             </div>
         </div>
@@ -360,13 +480,31 @@
             const text = document.getElementById(elementId).textContent;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
-                    tg.showAlert('Copied to clipboard!');
+                    tg.showAlert('✅ Wallet address copied!\n\nNow send SOL to this address from your exchange or wallet.');
                 }).catch(() => {
                     tg.showAlert('Failed to copy. Tap and hold to copy manually.');
                 });
             } else {
                 tg.showAlert('Tap and hold to copy');
             }
+        }
+
+        function selectTier(amount) {
+            // Show deposit instructions
+            document.getElementById('depositAmount').textContent = amount + ' SOL';
+            document.getElementById('depositInstructions').style.display = 'block';
+            
+            // Scroll to instructions
+            document.getElementById('depositInstructions').scrollIntoView({ behavior: 'smooth' });
+            
+            // Show confirmation
+            const tierNames = {
+                3: '💎 ALPHA HUNTER',
+                5: '⚔️ ALPHA NEXUS',
+                10: '🔥 ALPHA JITO'
+            };
+            
+            tg.showAlert(`Selected: ${tierNames[amount]}\n\nDeposit ${amount} SOL to your wallet address to activate this tier!`);
         }
 
         // Update button text based on user
