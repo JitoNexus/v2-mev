@@ -81,89 +81,44 @@
             box-sizing: border-box;
         }
         
-        /* PLAY Button Styles */
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            cursor: pointer;
+        /* Access Wallet Button Styles */
+        .access-button {
+            --green: #1BFD9C;
+            font-size: 15px;
+            padding: 0.7em 2.7em;
+            letter-spacing: 0.06em;
             position: relative;
+            font-family: inherit;
+            border-radius: 0.6em;
             overflow: hidden;
-            transition: all 0.3s ease;
-            margin-top: 30px;
-            border-radius: 8px;
+            transition: all 0.3s;
+            line-height: 1.4em;
+            border: 2px solid var(--green);
+            background: linear-gradient(to right, rgba(27, 253, 156, 0.1) 1%, transparent 40%,transparent 60% , rgba(27, 253, 156, 0.1) 100%);
+            color: var(--green);
+            box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.4), 0 0 9px 3px rgba(27, 253, 156, 0.1);
+            cursor: pointer;
+            margin-top: 20px;
         }
         
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        .access-button:hover {
+            color: #82ffc9;
+            box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.6), 0 0 9px 3px rgba(27, 253, 156, 0.2);
         }
         
-        #clip {
+        .access-button:before {
+            content: "";
             position: absolute;
+            left: -4em;
+            width: 4em;
+            height: 100%;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
+            transition: transform .4s ease-in-out;
+            background: linear-gradient(to right, transparent 1%, rgba(27, 253, 156, 0.1) 40%,rgba(27, 253, 156, 0.1) 60% , transparent 100%);
         }
         
-        .corner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #fff;
-        }
-        
-        #leftTop {
-            top: 5px;
-            left: 5px;
-            border-right: none;
-            border-bottom: none;
-        }
-        
-        #rightBottom {
-            bottom: 5px;
-            right: 5px;
-            border-left: none;
-            border-top: none;
-        }
-        
-        #rightTop {
-            top: 5px;
-            right: 5px;
-            border-left: none;
-            border-bottom: none;
-        }
-        
-        #leftBottom {
-            bottom: 5px;
-            left: 5px;
-            border-right: none;
-            border-top: none;
-        }
-        
-        .arrow {
-            position: absolute;
-            top: 50%;
-            width: 15px;
-            height: 2px;
-            background: white;
-            transform: translateY(-50%);
-        }
-        
-        #rightArrow {
-            right: 10px;
-            transform: translateY(-50%) rotate(45deg);
-        }
-        
-        #leftArrow {
-            left: 10px;
-            transform: translateY(-50%) rotate(-45deg);
+        .access-button:hover:before {
+            transform: translateX(15em);
         }
         
         .hidden {
@@ -178,9 +133,9 @@
     <div class="content-wrapper">
         <!-- Initial State: User Stats with 0 balance -->
         <div id="initialState">
-            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/80 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
-                <div class="absolute inset-px rounded-[11px] bg-slate-950"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950/80"></div>
 
                 <div class="relative">
                     <div class="mb-4 flex items-center justify-between">
@@ -241,27 +196,20 @@
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-medium text-slate-400">Fund wallet to activate</span>
                         </div>
-                        <button onclick="accessWallet()">
-                            P L A Y
-                            <div id="clip">
-                                <div id="leftTop" class="corner"></div>
-                                <div id="rightBottom" class="corner"></div>
-                                <div id="rightTop" class="corner"></div>
-                                <div id="leftBottom" class="corner"></div>
-                            </div>
-                            <span id="rightArrow" class="arrow"></span>
-                            <span id="leftArrow" class="arrow"></span>
-                        </button>
                     </div>
                 </div>
             </div>
+            
+            <button class="access-button" onclick="accessWallet()">
+                Access Wallet
+            </button>
         </div>
 
         <!-- Wallet State: User has wallet -->
         <div id="walletState" class="hidden">
-            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/80 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
-                <div class="absolute inset-px rounded-[11px] bg-slate-950"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950/80"></div>
 
                 <div class="relative">
                     <div class="mb-4 flex items-center justify-between">
@@ -402,12 +350,11 @@
                 // Show wallet state
                 showWalletState(userWallet, user.username || user.first_name);
             } else {
-                // New user - prompt to run bot
+                // New user - guide to use /get_wallet
                 tg.showAlert(
                     `Welcome, ${user.username || user.first_name || 'User'}!\n\n` +
-                    'To deploy your secure wallet, please run the bot in Telegram chat:\n\n' +
-                    '@jitoxmev_bot\n\n' +
-                    'After deploying, click this button again to access your wallet.'
+                    'No wallet found. Please use the /get_wallet command in the bot chat to deploy your wallet first.\n\n' +
+                    'Then click this button again to access your wallet.'
                 );
             }
         }
