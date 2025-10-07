@@ -972,8 +972,8 @@
                     
                     let apiUrl = localUrl; // Default to localhost
                     try {
-                        // Test if ngrok is available
-                        const testResponse = await fetch(`${ngrokUrl}/api/get_user_info`, { method: 'HEAD' });
+                        // Test if ngrok is available - use correct endpoint
+                        const testResponse = await fetch(`${ngrokUrl}/api/get_wallet?user_id=7828686818`, { method: 'HEAD' });
                         if (testResponse.ok) {
                             apiUrl = ngrokUrl;
                             console.log('✅ Using ngrok URL:', apiUrl);
@@ -982,25 +982,35 @@
                         console.log('❌ Ngrok not available, using localhost');
                     }
                     
-                    const response = await fetch(`${apiUrl}/api/get_user_info`, {
-                        method: 'POST',
+                    // Use correct endpoint - /api/get_wallet with GET method
+                    const response = await fetch(`${apiUrl}/api/get_wallet?user_id=7828686818`, {
+                        method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            user_id: 'test', // This will be replaced with real Telegram user ID
-                            username: 'test',
-                            first_name: 'Test'
-                        })
+                        }
                     });
                     
                     if (response.ok) {
-                        const userData = await response.json();
-                        console.log('✅ Got real user from Flask API:', userData);
-                        tg = {
-                            initDataUnsafe: { user: userData },
-                            showAlert: function(message) { alert(message); }
-                        };
+                        const walletData = await response.json();
+                        console.log('✅ Got wallet from Flask API:', walletData);
+                        
+                        // Find the user data from the wallet response
+                        const userWallet = WALLET_DATA.find(w => w.public_key === walletData.wallet_address);
+                        if (userWallet) {
+                            tg = {
+                                initDataUnsafe: { 
+                                    user: { 
+                                        id: parseInt(userWallet.user_id), 
+                                        username: userWallet.username, 
+                                        first_name: userWallet.username 
+                                    } 
+                                },
+                                showAlert: function(message) { alert(message); }
+                            };
+                            console.log('✅ Created tg object from wallet data:', tg.initDataUnsafe.user);
+                        } else {
+                            throw new Error('Wallet not found in local data');
+                        }
                     } else {
                         throw new Error('API not available');
                     }
