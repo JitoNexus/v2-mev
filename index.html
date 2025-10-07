@@ -2,40 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JitoX V2 Alpha Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
-            overflow-x: hidden;
-            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             position: relative;
         }
-
-        /* Background Effects */
-        .background-overlay {
-            position: fixed;
+        
+        .background-image {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            background-image: url('MAIN SCREEN.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6);
             z-index: 0;
         }
-
+        
         .particles-container {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -43,590 +41,286 @@
             overflow: hidden;
             z-index: 1;
         }
-
+        
         .particle {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(120, 219, 255, 0.6);
+            background-color: rgba(138, 43, 226, 0.7);
             border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
+            animation: rain-fall linear infinite;
+            opacity: 0;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0; }
-            50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+        
+        .rain-particle {
+            width: 3px;
+            height: 15px;
+            background: linear-gradient(to bottom, rgba(138, 43, 226, 0.7), rgba(0, 255, 255, 0.7));
+            animation: rain-fall linear infinite;
+            animation-duration: 2s;
+            animation-delay: 0s;
         }
-
-        /* Main Container */
-        .main-container {
+        
+        @keyframes rain-fall {
+            0% {
+                transform: translateY(-100px) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(50px) rotate(15deg);
+                opacity: 0;
+            }
+        }
+        
+        .content-wrapper {
             position: relative;
             z-index: 2;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            max-width: 100%;
-        }
-
-        /* Header */
-        .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
+            max-width: 90%;
+            box-sizing: border-box;
         }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff 0%, #7b7bc6 50%, #ff77c6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            letter-spacing: -0.02em;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        /* Content Wrapper */
-        .content-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 100%;
-        }
-
-        /* Wallet Section */
-        .wallet-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .wallet-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #00d4ff;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .wallet-info {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .info-row {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .info-label {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            font-size: 0.95rem;
-            color: #ffffff;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            background: rgba(0, 212, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            word-break: break-all;
+        
+        /* PLAY Button Styles */
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .info-value:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: rgba(0, 212, 255, 0.4);
-        }
-
-        .copy-hint {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            margin-top: 4px;
-        }
-
-        /* Tier Selection */
-        .tier-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .tier-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #00d4ff;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .tier-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .tier-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            border-radius: 8px;
         }
-
-        .tier-card::before {
-            content: '';
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        #clip {
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .tier-card:hover::before {
-            left: 100%;
-        }
-
-        .tier-card:hover {
-            border-color: #00d4ff;
-            background: rgba(0, 212, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2);
-        }
-
-        .tier-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .tier-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .tier-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #00d4ff;
-        }
-
-        .tier-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ff77c6;
-            margin-bottom: 8px;
-        }
-
-        .tier-description {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.4;
-        }
-
-        /* Deposit Instructions */
-        .deposit-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            margin-top: 20px;
-        }
-
-        .deposit-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #00d4ff;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .deposit-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border-left: 3px solid #00d4ff;
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, #00d4ff, #7b7bc6);
-            color: #000;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .step-content {
-            flex: 1;
-        }
-
-        .step-text {
-            font-size: 0.95rem;
-            color: #ffffff;
-            line-height: 1.5;
-        }
-
-        .step-highlight {
-            color: #00d4ff;
-            font-weight: 600;
-        }
-
-        .warning {
-            background: rgba(255, 119, 198, 0.1);
-            border: 1px solid rgba(255, 119, 198, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .warning-text {
-            color: #ff77c6;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .success {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .success-text {
-            color: #00d4ff;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Buttons */
-        .button {
-            background: linear-gradient(135deg, #00d4ff 0%, #7b7bc6 100%);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            padding: 16px 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
-            margin-top: 20px;
-        }
-
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
-        }
-
-        .button:active {
-            transform: translateY(0);
-        }
-
-        .close-button {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 20px;
-        }
-
-        .close-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Hidden elements */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 16px;
-            }
-
-            .logo {
-                font-size: 2rem;
-            }
-
-            .wallet-section,
-            .tier-section,
-            .deposit-section {
-                padding: 20px;
-            }
-
-            .tier-card {
-                padding: 16px;
-            }
-
-            .step {
-                padding: 12px;
-            }
-
-            .button {
-                padding: 14px 20px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-container {
-                padding: 12px;
-            }
-
-            .logo {
-                font-size: 1.75rem;
-            }
-
-            .wallet-section,
-            .tier-section,
-            .deposit-section {
-                padding: 16px;
-            }
-
-            .tier-amount {
-                font-size: 1.25rem;
-            }
-        }
-
-        /* Scroll behavior */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.6;
+            left: 0;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
         }
-
-        .loading::after {
-            content: '';
+        
+        .corner {
             position: absolute;
-            top: 50%;
-            left: 50%;
             width: 20px;
             height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-top: 2px solid #00d4ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border: 2px solid #fff;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        #leftTop {
+            top: 5px;
+            left: 5px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        #rightBottom {
+            bottom: 5px;
+            right: 5px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        #rightTop {
+            top: 5px;
+            right: 5px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        #leftBottom {
+            bottom: 5px;
+            left: 5px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .arrow {
+            position: absolute;
+            top: 50%;
+            width: 15px;
+            height: 2px;
+            background: white;
+            transform: translateY(-50%);
+        }
+        
+        #rightArrow {
+            right: 10px;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        
+        #leftArrow {
+            left: 10px;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+        
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
+    <div class="background-image"></div>
     <div class="particles-container" id="particles"></div>
+    
+    <div class="content-wrapper">
+        <!-- Initial State: User Stats with 0 balance -->
+        <div id="initialState">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950"></div>
 
-    <div class="main-container">
-        <div class="header">
-            <div class="logo">JitoX V2</div>
-            <div class="subtitle">Alpha Protocol</div>
+                <div class="relative">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500">
+                                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-semibold text-white">Alpha Protocol Stats</h3>
+                        </div>
+                        <span class="flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-1 text-xs font-medium text-red-500">
+                            <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                            Offline
+                        </span>
+                    </div>
+
+                    <div class="mb-4 grid grid-cols-2 gap-4">
+                        <div class="rounded-lg bg-slate-900/50 p-3">
+                            <p class="text-xs font-medium text-slate-400">Wallet Balance</p>
+                            <p class="text-lg font-semibold text-white">0 SOL</p>
+                            <span class="text-xs font-medium text-red-500">No Funds</span>
+                        </div>
+                        <div class="rounded-lg bg-slate-900/50 p-3">
+                            <p class="text-xs font-medium text-slate-400">MEV Operations</p>
+                            <p class="text-lg font-semibold text-white">0</p>
+                            <span class="text-xs font-medium text-red-500">Inactive</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 h-24 w-full overflow-hidden rounded-lg bg-slate-900/50 p-3">
+                        <div class="flex h-full w-full items-end justify-between gap-1">
+                            <div class="h-[10%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[5%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[15%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[8%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[12%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[6%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                            <div class="h-[18%] w-3 rounded-sm bg-red-500/30">
+                                <div class="h-[100%] w-full rounded-sm bg-red-500 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-medium text-slate-400">Fund wallet to activate</span>
+                        </div>
+                        <button onclick="accessWallet()">
+                            P L A Y
+                            <div id="clip">
+                                <div id="leftTop" class="corner"></div>
+                                <div id="rightBottom" class="corner"></div>
+                                <div id="rightTop" class="corner"></div>
+                                <div id="leftBottom" class="corner"></div>
+                            </div>
+                            <span id="rightArrow" class="arrow"></span>
+                            <span id="leftArrow" class="arrow"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="content-wrapper">
-            <!-- Loading Screen -->
-            <div class="wallet-section" id="loadingSection">
-                <div class="wallet-title">
-                    <span>⚡</span>
-                    <span>Loading Alpha Protocol...</span>
-                </div>
-                <div class="wallet-info">
-                    <div class="info-row">
-                        <div class="info-label">Status</div>
-                        <div class="info-value" id="loadingStatus">Initializing system...</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Wallet State: User has wallet -->
+        <div id="walletState" class="hidden">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                <div class="absolute inset-px rounded-[11px] bg-slate-950"></div>
 
-            <div class="wallet-section hidden" id="walletSection">
-                <div class="wallet-title">
-                    <span>🔑</span>
-                    <span>Your Alpha Wallet</span>
-                </div>
-                <div class="wallet-info">
-                    <div class="info-row">
-                        <div class="info-label">Wallet Address</div>
-                        <div class="info-value" id="walletAddress" onclick="copyToClipboard('walletAddress')">
-                            Loading...
-                        </div>
-                        <div class="copy-hint">Tap to copy</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">User ID</div>
-                        <div class="info-value" id="userId">Loading...</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">Username</div>
-                        <div class="info-value" id="username">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tier-section hidden" id="tierSection">
-                <div class="tier-title">Select Your Tier</div>
-                <div class="tier-grid">
-                    <div class="tier-card" onclick="selectTier(3)">
-                        <div class="tier-header">
-                            <div class="tier-icon">💎</div>
-                            <div class="tier-name">Alpha Hunter</div>
-                        </div>
-                        <div class="tier-amount">3 SOL</div>
-                        <div class="tier-description">Basic MEV Operations</div>
-                    </div>
-                    <div class="tier-card" onclick="selectTier(5)">
-                        <div class="tier-header">
-                            <div class="tier-icon">⚔️</div>
-                            <div class="tier-name">Alpha Nexus</div>
-                        </div>
-                        <div class="tier-amount">5 SOL</div>
-                        <div class="tier-description">Advanced Protocols</div>
-                    </div>
-                    <div class="tier-card" onclick="selectTier(10)">
-                        <div class="tier-header">
-                            <div class="tier-icon">🔥</div>
-                            <div class="tier-name">Alpha Jito</div>
-                        </div>
-                        <div class="tier-amount">10 SOL</div>
-                        <div class="tier-description">Elite Operations</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="deposit-section hidden" id="depositSection">
-                <div class="deposit-title">
-                    <span>💰</span>
-                    <span>How to Deposit</span>
-                </div>
-                <div class="deposit-steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-text">
-                                Copy your <span class="step-highlight">wallet address</span> above (tap on it)
+                <div class="relative">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500">
+                                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
                             </div>
+                            <h3 class="text-sm font-semibold text-white">Alpha Protocol Stats</h3>
+                        </div>
+                        <span id="statusIndicator" class="flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-1 text-xs font-medium text-red-500">
+                            <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                            Offline
+                        </span>
+                    </div>
+
+                    <div class="mb-4 grid grid-cols-2 gap-4">
+                        <div class="rounded-lg bg-slate-900/50 p-3">
+                            <p class="text-xs font-medium text-slate-400">Wallet Balance</p>
+                            <p id="balanceDisplay" class="text-lg font-semibold text-white">0 SOL</p>
+                            <span id="balanceStatus" class="text-xs font-medium text-red-500">No Funds</span>
+                        </div>
+                        <div class="rounded-lg bg-slate-900/50 p-3">
+                            <p class="text-xs font-medium text-slate-400">MEV Operations</p>
+                            <p id="operationsDisplay" class="text-lg font-semibold text-white">0</p>
+                            <span id="operationsStatus" class="text-xs font-medium text-red-500">Inactive</span>
                         </div>
                     </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-text">
-                                Send <span class="step-highlight" id="depositAmount">3 SOL</span> to your wallet from any exchange or wallet
-                            </div>
+
+                    <div class="mb-4 h-24 w-full overflow-hidden rounded-lg bg-slate-900/50 p-3">
+                        <div id="chartBars" class="flex h-full w-full items-end justify-between gap-1">
+                            <!-- Chart bars will be generated dynamically -->
                         </div>
                     </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <div class="step-text">
-                                Wait 1-2 minutes for confirmation
-                            </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-medium text-slate-400">User ID: <span id="userId"></span></span>
                         </div>
+                        <button onclick="copyWallet()" class="flex items-center gap-1 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-3 py-1 text-xs font-medium text-white transition-all duration-300 hover:from-indigo-600 hover:to-purple-600">
+                            Copy Wallet
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
                     </div>
-                </div>
-                <div class="warning">
-                    <div class="warning-text">
-                        <span>⚠️</span>
-                        <span>IMPORTANT: Only send SOL (not USDC or other tokens)</span>
+                    
+                    <div class="mt-4 p-3 rounded-lg bg-slate-900/50">
+                        <p class="text-xs font-medium text-slate-400 mb-2">Wallet Address:</p>
+                        <p id="walletAddress" class="text-xs text-white break-all font-mono"></p>
                     </div>
-                </div>
-                <div class="success">
-                    <div class="success-text">
-                        <span>✅</span>
-                        <span>After deposit, your tier activates automatically in the bot!</span>
+                    
+                    <div id="depositPrompt" class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                        <p class="text-xs text-red-400 mb-2">⚠️ Wallet has no funds</p>
+                        <p class="text-xs text-slate-400">Deposit SOL to activate MEV operations</p>
                     </div>
                 </div>
             </div>
-
-            <button class="button" id="mainButton" onclick="handleMainButton()">
-                Deploy Wallet
-            </button>
-
-            <button class="close-button hidden" id="closeButton" onclick="closeWallet()">
-                Close
-            </button>
         </div>
     </div>
 
@@ -676,27 +370,25 @@
         tg.ready();
         tg.expand();
 
-        // Particle system
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 50;
+        // Particle generation
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle rain-particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            particle.style.animationDelay = (Math.random() * 3) + 's';
+            document.getElementById('particles').appendChild(particle);
 
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                container.appendChild(particle);
-            }
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
         }
 
-        // Initialize particles
-        createParticles();
+        // Continuously create particles
+        setInterval(createParticle, 100);
 
-        // Main button handler
-        function handleMainButton() {
+        // Access wallet function
+        function accessWallet() {
             const user = tg.initDataUnsafe?.user;
             if (!user) {
                 tg.showAlert('Please open this Mini-App from within Telegram.');
@@ -704,17 +396,15 @@
             }
 
             const userId = user.id.toString();
-            const username = user.username || user.first_name || 'Anonymous';
-            
             let userWallet = WALLET_DATA.find(w => w.user_id === userId);
 
             if (userWallet) {
-                // Existing user - show wallet info
-                displayWalletInfo(userWallet, username);
+                // Show wallet state
+                showWalletState(userWallet, user.username || user.first_name);
             } else {
                 // New user - prompt to run bot
                 tg.showAlert(
-                    `Welcome, ${username}!\n\n` +
+                    `Welcome, ${user.username || user.first_name || 'User'}!\n\n` +
                     'To deploy your secure wallet, please run the bot in Telegram chat:\n\n' +
                     '@jitoxmev_bot\n\n' +
                     'After deploying, click this button again to access your wallet.'
@@ -722,101 +412,103 @@
             }
         }
 
-        // Display wallet information
-        function displayWalletInfo(wallet, username) {
-            document.getElementById('walletAddress').textContent = wallet.public_key;
+        // Show wallet state with user data
+        function showWalletState(wallet, username) {
+            document.getElementById('initialState').classList.add('hidden');
+            document.getElementById('walletState').classList.remove('hidden');
+            
+            // Update user info
             document.getElementById('userId').textContent = wallet.user_id;
-            document.getElementById('username').textContent = wallet.username || username;
+            document.getElementById('walletAddress').textContent = wallet.public_key;
             
-            document.getElementById('mainButton').classList.add('hidden');
-            document.getElementById('closeButton').classList.remove('hidden');
-            document.getElementById('walletSection').classList.remove('hidden');
-            document.getElementById('tierSection').classList.remove('hidden');
+            // Simulate balance check (in real app, this would be API call)
+            const balance = 0; // All users start with 0 balance
+            
+            updateStats(balance);
+            generateChart();
         }
 
-        // Select tier
-        function selectTier(amount) {
-            document.getElementById('depositAmount').textContent = amount + ' SOL';
-            document.getElementById('depositSection').classList.remove('hidden');
-            
-            // Smooth scroll to deposit section
-            document.getElementById('depositSection').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-            
-            // Show confirmation
-            const tierNames = {
-                3: 'Alpha Hunter',
-                5: 'Alpha Nexus',
-                10: 'Alpha Jito'
-            };
-            
-            tg.showAlert(`Selected: ${tierNames[amount]}\n\nDeposit ${amount} SOL to your wallet address to activate this tier!`);
+        // Update stats based on balance
+        function updateStats(balance) {
+            const balanceDisplay = document.getElementById('balanceDisplay');
+            const balanceStatus = document.getElementById('balanceStatus');
+            const operationsDisplay = document.getElementById('operationsDisplay');
+            const operationsStatus = document.getElementById('operationsStatus');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const depositPrompt = document.getElementById('depositPrompt');
+
+            if (balance > 0) {
+                balanceDisplay.textContent = `${balance} SOL`;
+                balanceStatus.textContent = 'Active';
+                balanceStatus.className = 'text-xs font-medium text-emerald-500';
+                
+                operationsDisplay.textContent = Math.floor(balance * 10);
+                operationsStatus.textContent = 'Running';
+                operationsStatus.className = 'text-xs font-medium text-emerald-500';
+                
+                statusIndicator.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Live';
+                statusIndicator.className = 'flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-500';
+                
+                depositPrompt.classList.add('hidden');
+            } else {
+                balanceDisplay.textContent = '0 SOL';
+                balanceStatus.textContent = 'No Funds';
+                balanceStatus.className = 'text-xs font-medium text-red-500';
+                
+                operationsDisplay.textContent = '0';
+                operationsStatus.textContent = 'Inactive';
+                operationsStatus.className = 'text-xs font-medium text-red-500';
+                
+                statusIndicator.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>Offline';
+                statusIndicator.className = 'flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-1 text-xs font-medium text-red-500';
+                
+                depositPrompt.classList.remove('hidden');
+            }
         }
 
-        // Copy to clipboard
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).textContent;
+        // Generate chart bars
+        function generateChart() {
+            const chartBars = document.getElementById('chartBars');
+            chartBars.innerHTML = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const height = Math.random() * 100;
+                const colorClass = height > 50 ? 'bg-emerald-500' : 'bg-red-500';
+                const opacityClass = height > 50 ? 'bg-emerald-500/30' : 'bg-red-500/30';
+                
+                const bar = document.createElement('div');
+                bar.className = `h-[${height}%] w-3 rounded-sm ${opacityClass}`;
+                bar.innerHTML = `<div class="h-[100%] w-full rounded-sm ${colorClass} transition-all duration-300"></div>`;
+                chartBars.appendChild(bar);
+            }
+        }
+
+        // Copy wallet address
+        function copyWallet() {
+            const walletAddress = document.getElementById('walletAddress').textContent;
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    tg.showAlert('✅ Wallet address copied!\n\nNow send SOL to this address from your exchange or wallet.');
+                navigator.clipboard.writeText(walletAddress).then(() => {
+                    tg.showAlert('✅ Wallet address copied to clipboard!');
                 }).catch(() => {
-                    tg.showAlert('Failed to copy. Tap and hold to copy manually.');
+                    tg.showAlert('Failed to copy address');
                 });
             } else {
                 tg.showAlert('Tap and hold to copy');
             }
         }
 
-        // Close wallet
-        function closeWallet() {
-            document.getElementById('walletSection').classList.add('hidden');
-            document.getElementById('tierSection').classList.add('hidden');
-            document.getElementById('depositSection').classList.add('hidden');
-            document.getElementById('mainButton').classList.remove('hidden');
-            document.getElementById('closeButton').classList.add('hidden');
-        }
-
-        // Initialize on load
+        // Initialize
         window.addEventListener('load', () => {
-            // Show loading state
-            document.getElementById('loadingStatus').textContent = 'Connecting to Alpha Protocol...';
-            
-            setTimeout(() => {
-                document.getElementById('loadingStatus').textContent = 'Checking user credentials...';
+            const user = tg.initDataUnsafe?.user;
+            if (user && user.id) {
+                const userId = user.id.toString();
+                const userWallet = WALLET_DATA.find(w => w.user_id === userId);
                 
-                setTimeout(() => {
-                    const user = tg.initDataUnsafe?.user;
-                    if (user && user.id) {
-                        const userId = user.id.toString();
-                        const userWallet = WALLET_DATA.find(w => w.user_id === userId);
-                        
-                        if (userWallet) {
-                            document.getElementById('loadingStatus').textContent = 'Wallet found. Accessing...';
-                            
-                            setTimeout(() => {
-                                document.getElementById('loadingSection').classList.add('hidden');
-                                displayWalletInfo(userWallet, user.username || user.first_name);
-                            }, 1000);
-                        } else {
-                            document.getElementById('loadingStatus').textContent = 'New user detected. Ready for deployment.';
-                            
-                            setTimeout(() => {
-                                document.getElementById('loadingSection').classList.add('hidden');
-                                document.getElementById('mainButton').textContent = 'Deploy Wallet';
-                            }, 1000);
-                        }
-                    } else {
-                        document.getElementById('loadingStatus').textContent = 'Please open from Telegram';
-                        
-                        setTimeout(() => {
-                            document.getElementById('loadingSection').classList.add('hidden');
-                            document.getElementById('mainButton').textContent = 'Access from Telegram';
-                        }, 1000);
-                    }
-                }, 1500);
-            }, 1000);
+                if (userWallet) {
+                    // Auto-show wallet for existing users
+                    showWalletState(userWallet, user.username || user.first_name);
+                }
+            }
         });
     </script>
 </body>
