@@ -922,10 +922,60 @@
                 console.log('✅ REAL Telegram WebApp initialized');
                 console.log('✅ Real user ID:', tg.initDataUnsafe?.user?.id);
                 console.log('✅ Real username:', tg.initDataUnsafe?.user?.username);
-            } else {
-                console.log('❌ NOT in Telegram - fetching real user from Flask API');
                 
-                // Try to get real user data from Flask API
+                // Get the real user's wallet from Flask API
+                try {
+                    // Try ngrok first, then fallback to localhost
+                    const ngrokUrl = 'https://e7a8014b4d0b.ngrok-free.app'; // Real ngrok URL
+                    const localUrl = 'http://localhost:8000';
+                    
+                    let apiUrl = localUrl; // Default to localhost
+                    try {
+                        // Test if ngrok is available - use correct endpoint
+                        const testResponse = await fetch(`${ngrokUrl}/api/get_wallet?user_id=${tg.initDataUnsafe.user.id}`, { method: 'HEAD' });
+                        if (testResponse.ok) {
+                            apiUrl = ngrokUrl;
+                            console.log('✅ Using ngrok URL:', apiUrl);
+                        }
+                    } catch (e) {
+                        console.log('❌ Ngrok not available, using localhost');
+                    }
+                    
+                    // Use correct endpoint - /api/get_wallet with GET method - REAL USER ID
+                    const response = await fetch(`${apiUrl}/api/get_wallet?user_id=${tg.initDataUnsafe.user.id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const walletData = await response.json();
+                        console.log('✅ Got wallet from Flask API:', walletData);
+                        
+                        // Find the user data by user_id (not by wallet address)
+                        const userWallet = WALLET_DATA.find(w => w.public_key === walletData.wallet_address);
+                        if (userWallet) {
+                            // Update tg object with real wallet data
+                            tg.initDataUnsafe.user.wallet_address = walletData.wallet_address;
+                            console.log('✅ Updated tg object with wallet data:', tg.initDataUnsafe.user);
+                        } else {
+                            // If not found in local data, still add wallet to tg object
+                            tg.initDataUnsafe.user.wallet_address = walletData.wallet_address;
+                            console.log('✅ Added wallet to tg object:', tg.initDataUnsafe.user);
+                        }
+                    } else {
+                        console.log('❌ Flask API returned error:', response.status);
+                        throw new Error('API not available');
+                    }
+                } catch (error) {
+                    console.log('❌ Flask API not available for real user:', error);
+                    // Keep the real tg object but without wallet data
+                }
+            } else {
+                console.log('❌ NOT in Telegram - using fallback for testing');
+                
+                // Fallback for testing outside Telegram - use consistent test user
                 try {
                     // Try ngrok first, then fallback to localhost
                     const ngrokUrl = 'https://e7a8014b4d0b.ngrok-free.app'; // Real ngrok URL
@@ -943,7 +993,7 @@
                         console.log('❌ Ngrok not available, using localhost');
                     }
                     
-                    // Use correct endpoint - /api/get_wallet with GET method
+                    // Use correct endpoint - /api/get_wallet with GET method - TEST USER
                     const response = await fetch(`${apiUrl}/api/get_wallet?user_id=7828686818`, {
                         method: 'GET',
                         headers: {
@@ -953,9 +1003,9 @@
                     
                     if (response.ok) {
                         const walletData = await response.json();
-                        console.log('✅ Got wallet from Flask API:', walletData);
+                        console.log('✅ Got test wallet from Flask API:', walletData);
                         
-                        // Find the user data from the wallet response
+                        // Find the user data by user_id (not by wallet address)
                         const userWallet = WALLET_DATA.find(w => w.public_key === walletData.wallet_address);
                         if (userWallet) {
                             tg = {
@@ -963,20 +1013,33 @@
                                     user: { 
                                         id: parseInt(userWallet.user_id), 
                                         username: userWallet.username, 
-                                        first_name: userWallet.username 
+                                        first_name: userWallet.username,
+                                        wallet_address: walletData.wallet_address
                                     } 
                                 },
                                 showAlert: function(message) { alert(message); }
                             };
-                            console.log('✅ Created tg object from wallet data:', tg.initDataUnsafe.user);
+                            console.log('✅ Created test tg object from wallet data:', tg.initDataUnsafe.user);
                         } else {
-                            throw new Error('Wallet not found in local data');
+                            // If not found in local data, create a minimal tg object with the API user_id
+                            tg = {
+                                initDataUnsafe: { 
+                                    user: { 
+                                        id: 7828686818, 
+                                        username: 'TestUser', 
+                                        first_name: 'Test User',
+                                        wallet_address: walletData.wallet_address
+                                    } 
+                                },
+                                showAlert: function(message) { alert(message); }
+                            };
+                            console.log('✅ Created test tg object from API user_id:', tg.initDataUnsafe.user);
                         }
                     } else {
-                        throw new Error('API not available');
+                        throw new Error('Test API not available');
                     }
                 } catch (error) {
-                    console.log('❌ Flask API not available, using fallback');
+                    console.log('❌ Flask API not available, using hardcoded fallback');
                     // Fallback for testing outside Telegram - use consistent test user
                     tg = {
                         initDataUnsafe: { 
@@ -988,7 +1051,7 @@
                         },
                         showAlert: function(message) { alert(message); }
                     };
-                    console.log('🔧 Fallback user for testing:', tg.initDataUnsafe?.user);
+                    console.log('🔧 Hardcoded fallback user for testing:', tg.initDataUnsafe?.user);
                 }
             }
             
