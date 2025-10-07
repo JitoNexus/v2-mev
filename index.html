@@ -954,14 +954,13 @@
             tg.expand();
             console.log('Real Telegram WebApp initialized for user:', tg.initDataUnsafe?.user);
         } else {
-            // Fallback for testing outside Telegram - use random user
-            const randomUser = WALLET_DATA[Math.floor(Math.random() * WALLET_DATA.length)];
+            // Fallback for testing outside Telegram - use consistent test user
             tg = {
                 initDataUnsafe: { 
                     user: { 
-                        id: parseInt(randomUser.user_id), 
-                        username: randomUser.username, 
-                        first_name: randomUser.username 
+                        id: 7828686818, 
+                        username: 'Jitoxai', 
+                        first_name: 'JitoX Test User' 
                     } 
                 },
                 showAlert: function(message) { alert(message); }
