@@ -960,22 +960,44 @@
             };
         }
 
-        // Particle generation
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'particle rain-particle';
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = (Math.random() * 2 + 1) + 's';
-            particle.style.animationDelay = (Math.random() * 3) + 's';
-            document.getElementById('particles').appendChild(particle);
+        // Particle generation - optimized for performance
+        let particleCount = 0;
+        const maxParticles = 12; // Limit total particles
+        const particlePool = []; // Reuse particles
 
-            particle.addEventListener('animationend', () => {
-                particle.remove();
-            });
+        function createParticle() {
+            let particle;
+            
+            // Reuse existing particles from pool
+            if (particlePool.length > 0) {
+                particle = particlePool.pop();
+                particle.style.display = 'block';
+            } else {
+                particle = document.createElement('div');
+                particle.className = 'particle rain-particle';
+                document.getElementById('particles').appendChild(particle);
+                
+                particle.addEventListener('animationend', () => {
+                    particle.style.display = 'none';
+                    particlePool.push(particle);
+                    particleCount--;
+                });
+            }
+            
+            // Reset and animate particle
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 2 + 3) + 's'; // Slower fall
+            particle.style.animationDelay = (Math.random() * 2) + 's'; // Reduced delay
+            
+            particleCount++;
         }
 
-        // Continuously create particles
-        setInterval(createParticle, 100);
+        // Continuously create particles - reduced frequency
+        setInterval(() => {
+            if (particleCount < maxParticles) {
+                createParticle();
+            }
+        }, 400); // Create particle every 400ms instead of 100ms
 
         // Access wallet function
         function accessWallet() {
