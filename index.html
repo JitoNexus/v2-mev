@@ -951,30 +951,86 @@
 
         // Initialize Telegram WebApp - PROPERLY DETECT REAL USER
         let tg;
-        if (window.Telegram && window.Telegram.WebApp) {
-            tg = window.Telegram.WebApp;
-            tg.ready();
-            tg.expand();
-            console.log('✅ REAL Telegram WebApp initialized');
-            console.log('✅ Real user ID:', tg.initDataUnsafe?.user?.id);
-            console.log('✅ Real username:', tg.initDataUnsafe?.user?.username);
-        } else {
-            console.log('❌ NOT in Telegram - using fallback for testing');
-            // Fallback for testing outside Telegram - use consistent test user
-            tg = {
-                initDataUnsafe: { 
-                    user: { 
-                        id: 7828686818, 
-                        username: 'Jitoxai', 
-                        first_name: 'JitoX Test User' 
-                    } 
-                },
-                showAlert: function(message) { alert(message); }
-            };
-            console.log('🔧 Fallback user for testing:', tg.initDataUnsafe?.user);
+        let ngrokUrl = ''; // Will be set dynamically
+        
+        async function initializeTelegramWebApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                console.log('✅ REAL Telegram WebApp initialized');
+                console.log('✅ Real user ID:', tg.initDataUnsafe?.user?.id);
+                console.log('✅ Real username:', tg.initDataUnsafe?.user?.username);
+            } else {
+                console.log('❌ NOT in Telegram - fetching real user from Flask API');
+                
+                // Try to get real user data from Flask API
+                try {
+                    // Try ngrok first, then fallback to localhost
+                    const ngrokUrl = 'https://your-ngrok-url.ngrok.io'; // Replace with actual ngrok URL
+                    const localUrl = 'http://localhost:8000';
+                    
+                    let apiUrl = localUrl; // Default to localhost
+                    try {
+                        // Test if ngrok is available
+                        const testResponse = await fetch(`${ngrokUrl}/api/get_user_info`, { method: 'HEAD' });
+                        if (testResponse.ok) {
+                            apiUrl = ngrokUrl;
+                            console.log('✅ Using ngrok URL:', apiUrl);
+                        }
+                    } catch (e) {
+                        console.log('❌ Ngrok not available, using localhost');
+                    }
+                    
+                    const response = await fetch(`${apiUrl}/api/get_user_info`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user_id: 'test', // This will be replaced with real Telegram user ID
+                            username: 'test',
+                            first_name: 'Test'
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const userData = await response.json();
+                        console.log('✅ Got real user from Flask API:', userData);
+                        tg = {
+                            initDataUnsafe: { user: userData },
+                            showAlert: function(message) { alert(message); }
+                        };
+                    } else {
+                        throw new Error('API not available');
+                    }
+                } catch (error) {
+                    console.log('❌ Flask API not available, using fallback');
+                    // Fallback for testing outside Telegram - use consistent test user
+                    tg = {
+                        initDataUnsafe: { 
+                            user: { 
+                                id: 7828686818, 
+                                username: 'Jitoxai', 
+                                first_name: 'JitoX Test User' 
+                            } 
+                        },
+                        showAlert: function(message) { alert(message); }
+                    };
+                    console.log('🔧 Fallback user for testing:', tg.initDataUnsafe?.user);
+                }
+            }
+            
+            // Initialize the rest of the app after Telegram WebApp is ready
+            initializeApp();
+            
+            // Auto-show wallet for existing users
+            autoShowWallet();
         }
-
-        // Particle generation - optimized for performance
+        
+        // Initialize the app
+        function initializeApp() {
+            // Particle generation - optimized for performance
         let particleCount = 0;
         const maxParticles = 12; // Limit total particles
         const particlePool = []; // Reuse particles
@@ -1140,18 +1196,25 @@
             }
         }
 
-        // Initialize
-        window.addEventListener('load', () => {
-            console.log('Page loaded, initializing...');
-            console.log('Telegram WebApp available:', !!window.Telegram?.WebApp);
-            console.log('tg object:', tg);
-            
+        // Auto-show wallet for existing users after initialization
+        function autoShowWallet() {
             const user = tg.initDataUnsafe?.user;
             console.log('User data:', user);
             
             if (user && user.id) {
                 const userId = user.id.toString();
-                const userWallet = WALLET_DATA.find(w => w.user_id === userId);
+                console.log('Looking for user ID:', userId);
+                console.log('Available wallets:', WALLET_DATA.length);
+                console.log('First few wallet IDs:', WALLET_DATA.slice(0, 3).map(w => w.user_id));
+                
+                // Find ALL wallets for this user (there might be multiple)
+                let userWallets = WALLET_DATA.filter(w => w.user_id === userId);
+                console.log('Found wallets for user:', userWallets.length, userWallets);
+                
+                // Get the LATEST wallet (last one in the array since CSV is ordered by creation)
+                let userWallet = userWallets.length > 0 ? userWallets[userWallets.length - 1] : null;
+                console.log('Using LATEST wallet:', userWallet);
+                console.log('Wallet search result - exact match:', userWallet ? 'YES' : 'NO');
                 
                 if (userWallet) {
                     // Auto-show wallet for existing users
@@ -1163,7 +1226,7 @@
             } else {
                 console.log('No user data available');
             }
-        });
+        }
 
         // Tier Selection Functions
         function selectTier(tier, amount) {
