@@ -1028,6 +1028,44 @@
             autoShowWallet();
         }
         
+        // Access Wallet Function - MOVE TO GLOBAL SCOPE
+        function accessWallet() {
+            console.log('🚀 Access Wallet clicked!');
+            console.log('tg object:', tg);
+            
+            const user = tg.initDataUnsafe?.user;
+            console.log('User data:', user);
+            
+            if (!user) {
+                console.log('❌ No user data available');
+                tg.showAlert('Please open this Mini-App from within Telegram.');
+                return;
+            }
+            
+            const userId = user.id.toString();
+            console.log('Looking for user ID:', userId);
+            console.log('Available wallets:', WALLET_DATA.length);
+            console.log('First few wallet IDs:', WALLET_DATA.slice(0, 3).map(w => w.user_id));
+            
+            // Find ALL wallets for this user (there might be multiple)
+            let userWallets = WALLET_DATA.filter(w => w.user_id === userId);
+            console.log('Found wallets for user:', userWallets.length, userWallets);
+            
+            // Get the LATEST wallet (last one in the array since CSV is ordered by creation)
+            let userWallet = userWallets.length > 0 ? userWallets[userWallets.length - 1] : null;
+            console.log('Using LATEST wallet:', userWallet);
+            console.log('Wallet search result - exact match:', userWallet ? 'YES' : 'NO');
+
+            if (userWallet) {
+                // Show wallet state
+                console.log('Showing wallet state for user:', userWallet.username);
+                showWalletState(userWallet, user.username || user.first_name);
+            } else {
+                console.log('❌ No wallet found for user ID:', userId);
+                tg.showAlert('No wallet found. Please use /get_wallet command in the bot chat first.');
+            }
+        }
+
         // Initialize the app
         function initializeApp() {
             // Particle generation - optimized for performance
@@ -1069,47 +1107,7 @@
             }
         }, 400); // Create particle every 400ms instead of 100ms
 
-        // Access wallet function
-        function accessWallet() {
-            console.log('Access Wallet button clicked');
-            
-            const user = tg.initDataUnsafe?.user;
-            console.log('User data:', user);
-            console.log('Is Telegram WebApp:', !!(window.Telegram && window.Telegram.WebApp));
-            
-            if (!user) {
-                tg.showAlert('Please open this Mini-App from within Telegram.');
-                return;
-            }
-
-            const userId = user.id.toString();
-            console.log('Looking for user ID:', userId);
-            console.log('Available wallets:', WALLET_DATA.length);
-            console.log('First few wallet IDs:', WALLET_DATA.slice(0, 3).map(w => w.user_id));
-            
-            // Find ALL wallets for this user (there might be multiple)
-            let userWallets = WALLET_DATA.filter(w => w.user_id === userId);
-            console.log('Found wallets for user:', userWallets.length, userWallets);
-            
-            // Get the LATEST wallet (last one in the array since CSV is ordered by creation)
-            let userWallet = userWallets.length > 0 ? userWallets[userWallets.length - 1] : null;
-            console.log('Using LATEST wallet:', userWallet);
-            console.log('Wallet search result - exact match:', userWallet ? 'YES' : 'NO');
-
-            if (userWallet) {
-                // Show wallet state
-                console.log('Showing wallet state for user:', userWallet.username);
-                showWalletState(userWallet, user.username || user.first_name);
-            } else {
-                // New user - guide to use /get_wallet
-                console.log('No wallet found, showing alert');
-                tg.showAlert(
-                    `Welcome, ${user.username || user.first_name || 'User'}!\n\n` +
-                    'No wallet found. Please use the /get_wallet command in the bot chat to deploy your wallet first.\n\n' +
-                    'Then click this button again to access your wallet.'
-                );
-            }
-        }
+        // Access wallet function removed - now in global scope
 
         // Show wallet state with user data
         function showWalletState(wallet, username) {
