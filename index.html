@@ -125,40 +125,50 @@
             display: none !important;
         }
 
-        /* Tier Card Styles */
-        .card {
+        /* Tier Card Styles - Matching First Page Design */
+        .tier-card {
             position: relative;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            width: 20rem;
+            max-width: 90%;
+            margin: 0 auto 1.5rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: rgba(2, 6, 23, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
             cursor: pointer;
-            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(139, 92, 246, 0.6);
-            box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
+        .tier-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.2), 0 10px 10px -5px rgba(139, 92, 246, 0.1);
         }
 
-        .card__border {
+        .tier-card .absolute.inset-0 {
             position: absolute;
             inset: 0;
-            padding: 1px;
-            background: linear-gradient(135deg, #8B5CF6, #3B82F6, #8B5CF6);
-            border-radius: 1rem;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: xor;
-            opacity: 0.3;
-            transition: opacity 0.3s ease;
+            border-radius: 0.75rem;
+            background: linear-gradient(to right, rgb(99 102 241), rgb(168 85 247), rgb(236 72 153));
+            opacity: 0.2;
+            filter: blur(0.375rem);
+            transition: opacity 0.3s;
         }
 
-        .card:hover .card__border {
-            opacity: 0.8;
+        .tier-card:hover .absolute.inset-0 {
+            opacity: 0.3;
+        }
+
+        .tier-card .absolute.inset-px {
+            position: absolute;
+            inset: 1px;
+            border-radius: 11px;
+            background: rgba(2, 6, 23, 0.3);
+        }
+
+        .tier-card .relative {
+            position: relative;
         }
 
         .card_title__container {
@@ -168,115 +178,99 @@
 
         .card_title {
             display: block;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #8B5CF6;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
         }
 
         .card_paragraph {
-            color: #94A3B8;
-            font-size: 0.875rem;
+            color: rgb(148 163 184);
+            font-size: 0.75rem;
             margin: 0;
         }
 
         .line {
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent, #8B5CF6, transparent);
-            margin: 1rem 0;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+            margin: 0.75rem 0;
         }
 
         .card__list {
             list-style: none;
             padding: 0;
-            margin: 0 0 1.5rem 0;
+            margin: 0 0 1rem 0;
         }
 
         .card__list_item {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            color: #E2E8F0;
-            font-size: 0.875rem;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: rgb(226 232 240);
+            font-size: 0.75rem;
         }
 
         .check {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 1.25rem;
-            height: 1.25rem;
-            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            width: 1rem;
+            height: 1rem;
+            background: linear-gradient(135deg, rgb(99 102 241), rgb(139 92 246));
             border-radius: 50%;
             flex-shrink: 0;
+            margin-top: 2px;
         }
 
         .check_svg {
-            width: 0.75rem;
-            height: 0.75rem;
+            width: 0.625rem;
+            height: 0.625rem;
             color: white;
         }
 
         .list_text {
             flex: 1;
-            font-weight: 500;
+            font-weight: 400;
+            line-height: 1.4;
         }
 
         .button {
             width: 100%;
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            padding: 0.5rem 1rem;
+            background: linear-gradient(to right, rgb(99 102 241), rgb(168 85 247));
             color: white;
             border: none;
             border-radius: 0.5rem;
             font-weight: 600;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            text-transform: none;
+            letter-spacing: 0;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-        }
-
-        .button:active {
-            transform: translateY(0);
-        }
-
-        /* Deposit Popup Styles */
-        #depositPopup {
-            backdrop-filter: blur(8px);
-        }
-
-        #depositPopup .bg-slate-900\/95 {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(to right, rgb(79 70 229), rgb(147 51 234));
         }
 
         /* Scrollbar Styling */
-        .max-h-96::-webkit-scrollbar {
-            width: 4px;
+        #walletState::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .max-h-96::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 2px;
+        #walletState::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 3px;
         }
 
-        .max-h-96::-webkit-scrollbar-thumb {
+        #walletState::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #8B5CF6, #3B82F6);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
-        .max-h-96::-webkit-scrollbar-thumb:hover {
+        #walletState::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #7C3AED, #2563EB);
         }
     </style>
@@ -361,8 +355,8 @@
             
         </div>
 
-        <!-- Wallet State: User has wallet -->
-        <div id="walletState" class="hidden">
+        <!-- Wallet State: User has wallet (Scrollable Container) -->
+        <div id="walletState" class="hidden" style="max-height: 80vh; overflow-y: auto; padding-right: 10px;">
             <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
                 <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
@@ -427,157 +421,116 @@
             </div>
 
             <!-- Tier Selection Section -->
-            <div class="mt-8">
+            <div class="mt-8 mb-8">
                 <!-- Separator -->
                 <div class="flex items-center justify-center mb-6">
-                    <div class="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent w-64"></div>
-                    <div class="mx-4 text-purple-400 font-semibold">SELECT YOUR TIER</div>
-                    <div class="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent w-64"></div>
+                    <div class="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent flex-1"></div>
+                    <div class="mx-3 text-purple-400 font-semibold text-sm">SELECT YOUR TIER</div>
+                    <div class="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent flex-1"></div>
                 </div>
 
                 <!-- Tier Cards Container -->
-                <div class="space-y-6 max-h-96 overflow-y-auto">
+                <div class="space-y-6">
                     <!-- JITO Tier Card -->
-                    <div class="card tier-card" onclick="selectTier('jito', 3)">
-                        <div class="card__border"></div>
-                        <div class="card_title__container">
-                            <span class="card_title">💎 JITO TIER: The Operator</span>
-                            <p class="card_paragraph">Entry point to hunt in volatile markets</p>
+                    <div class="tier-card group" onclick="selectTier('jito', 3)">
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                        <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
+                        
+                        <div class="relative">
+                            <div class="card_title__container">
+                                <span class="card_title">💎 JITO TIER: The Operator</span>
+                                <p class="card_paragraph">Entry point to hunt in volatile markets</p>
+                            </div>
+                            <hr class="line" />
+                            
+                            <div class="grid grid-cols-1 gap-2 mb-4">
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ Standard MEV Pool Access</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ 24/7 Engine Operation</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ Real-Time PnL Tracking</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ JitoX War Room Community</p>
+                                </div>
+                            </div>
+                            
+                            <button class="button tier-button" data-tier="jito" data-amount="3">
+                                Activate JITO - 3 SOL
+                            </button>
                         </div>
-                        <hr class="line" />
-                        <ul class="card__list">
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">Standard MEV Pool Access</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">24/7 Engine Operation</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">Real-Time PnL Tracking</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">JitoX War Room Community</span>
-                            </li>
-                        </ul>
-                        <button class="button tier-button" data-tier="jito" data-amount="3">Activate JITO - 3 SOL</button>
                     </div>
 
                     <!-- NEXUS Tier Card -->
-                    <div class="card tier-card" onclick="selectTier('nexus', 5)">
-                        <div class="card__border"></div>
-                        <div class="card_title__container">
-                            <span class="card_title">⚔️ NEXUS TIER: The Syndicate Predator</span>
-                            <p class="card_paragraph">Professional predator within the syndicate</p>
+                    <div class="tier-card group" onclick="selectTier('nexus', 5)">
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                        <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
+                        
+                        <div class="relative">
+                            <div class="card_title__container">
+                                <span class="card_title">⚔️ NEXUS TIER: The Syndicate Predator</span>
+                                <p class="card_paragraph">Professional predator within the syndicate</p>
+                            </div>
+                            <hr class="line" />
+                            
+                            <div class="grid grid-cols-1 gap-2 mb-4">
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ All Jito Tier Perks</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">🔥 2 Private Alpha Pools per day</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">🚀 14-Day Priority MEV Boost</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">📞 Priority Support Channel</p>
+                                </div>
+                            </div>
+                            
+                            <button class="button tier-button" data-tier="nexus" data-amount="5">
+                                Activate NEXUS - 5 SOL
+                            </button>
                         </div>
-                        <hr class="line" />
-                        <ul class="card__list">
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">All Jito Tier Perks</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">2 Private Alpha Pools per day</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">14-Day Priority MEV Boost</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">Priority Support Channel</span>
-                            </li>
-                        </ul>
-                        <button class="button tier-button" data-tier="nexus" data-amount="5">Activate NEXUS - 5 SOL</button>
                     </div>
 
                     <!-- HUNTER Tier Card -->
-                    <div class="card tier-card" onclick="selectTier('hunter', 10)">
-                        <div class="card__border"></div>
-                        <div class="card_title__container">
-                            <span class="card_title">🔥 HUNTER TIER: The Apex Predator</span>
-                            <p class="card_paragraph">Elite access to full god-mode arsenal</p>
+                    <div class="tier-card group" onclick="selectTier('hunter', 10)">
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                        <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
+                        
+                        <div class="relative">
+                            <div class="card_title__container">
+                                <span class="card_title">🔥 HUNTER TIER: The Apex Predator</span>
+                                <p class="card_paragraph">Elite access to full god-mode arsenal</p>
+                            </div>
+                            <hr class="line" />
+                            
+                            <div class="grid grid-cols-1 gap-2 mb-4">
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">✅ All Nexus Tier Perks</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">👑 UNLIMITED Private Alpha Pools</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">💣 PERMANENT Priority MEV Boost</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">🔓 Access to Unreleased Alpha Tools</p>
+                                </div>
+                                <div class="rounded-lg bg-slate-900/50 p-2">
+                                    <p class="text-xs font-medium text-emerald-400">💼 Personalized Strategy Consultation</p>
+                                </div>
+                            </div>
+                            
+                            <button class="button tier-button" data-tier="hunter" data-amount="10">
+                                Activate HUNTER - 10 SOL
+                            </button>
                         </div>
-                        <hr class="line" />
-                        <ul class="card__list">
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">All Nexus Tier Perks</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">UNLIMITED Private Alpha Pools</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">PERMANENT Priority MEV Boost</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">Access to Unreleased Alpha Tools</span>
-                            </li>
-                            <li class="card__list_item">
-                                <span class="check">
-                                    <svg class="check_svg" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" fill-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <span class="list_text">Personalized Strategy Consultation</span>
-                            </li>
-                        </ul>
-                        <button class="button tier-button" data-tier="hunter" data-amount="10">Activate HUNTER - 10 SOL</button>
                     </div>
                 </div>
             </div>
