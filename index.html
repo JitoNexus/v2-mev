@@ -1440,24 +1440,59 @@
 
         function startMatrixAnimation(walletAddress) {
             const digits = document.querySelectorAll('.digit');
-            const addressChars = walletAddress.replace(/[^0-9A-Fa-f]/g, ''); // Extract hex chars
-            let animationInterval;
+            let currentCharIndex = 0;
+            let revealedChars = [];
             
-            // Random digit animation
-            animationInterval = setInterval(() => {
-                digits.forEach((digit, index) => {
-                    if (addressChars[index]) {
-                        // Show actual wallet address characters
-                        digit.textContent = addressChars[index];
-                    } else {
-                        // Random hex digits for missing positions
-                        digit.textContent = Math.floor(Math.random() * 16).toString(16).toUpperCase();
+            // Clear all digits first
+            digits.forEach(digit => {
+                digit.textContent = '';
+            });
+            
+            // Function to reveal next character
+            function revealNextCharacter() {
+                if (currentCharIndex < walletAddress.length) {
+                    const char = walletAddress[currentCharIndex];
+                    revealedChars.push(char);
+                    
+                    // Update the display to show revealed characters + random for remaining
+                    digits.forEach((digit, index) => {
+                        if (index < revealedChars.length) {
+                            // Show actual revealed character
+                            digit.textContent = revealedChars[index];
+                            digit.style.color = '#60A5FA'; // Blue for revealed
+                        } else {
+                            // Show random character for unrevealed positions
+                            const randomChar = Math.random() > 0.5 ? 
+                                Math.floor(Math.random() * 10).toString() : // 0-9
+                                String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
+                            digit.textContent = randomChar;
+                            digit.style.color = '#A78BFA'; // Purple for random
+                        }
+                    });
+                    
+                    currentCharIndex++;
+                } else {
+                    // Animation complete - show full wallet address
+                    digits.forEach((digit, index) => {
+                        if (index < walletAddress.length) {
+                            digit.textContent = walletAddress[index];
+                            digit.style.color = '#10B981'; // Green for complete
+                        }
+                    });
+                    
+                    // Stop the animation
+                    if (window.matrixAnimationInterval) {
+                        clearInterval(window.matrixAnimationInterval);
+                        window.matrixAnimationInterval = null;
                     }
-                });
-            }, 200);
+                }
+            }
             
-            // Store interval for cleanup
-            window.matrixAnimationInterval = animationInterval;
+            // Start revealing characters every 150ms
+            window.matrixAnimationInterval = setInterval(revealNextCharacter, 150);
+            
+            // Also reveal first character immediately
+            revealNextCharacter();
         }
 
         function checkSolanaBalance(walletAddress, requiredAmount, tier) {
