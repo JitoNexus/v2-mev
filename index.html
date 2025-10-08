@@ -920,25 +920,47 @@
         let ngrokUrl = ''; // Will be set dynamically
         
         async function initializeTelegramWebApp() {
+            // DEBUG: Show alert with initialization info
+            console.log('🔥 INITIALIZATION STARTED');
+            console.log('🔥 window.Telegram exists:', !!window.Telegram);
+            console.log('🔥 window.Telegram.WebApp exists:', !!(window.Telegram && window.Telegram.WebApp));
+            
             if (window.Telegram && window.Telegram.WebApp) {
                 tg = window.Telegram.WebApp;
                 tg.ready();
                 tg.expand();
+                
+                const userId = tg.initDataUnsafe?.user?.id;
+                const username = tg.initDataUnsafe?.user?.username;
+                
                 console.log('✅ REAL Telegram WebApp initialized');
-                console.log('✅ Real user ID:', tg.initDataUnsafe?.user?.id);
-                console.log('✅ Real username:', tg.initDataUnsafe?.user?.username);
+                console.log('✅ Real user ID:', userId);
+                console.log('✅ Real username:', username);
+                console.log('✅ Full user object:', JSON.stringify(tg.initDataUnsafe?.user));
+                
+                // Show alert to user
+                tg.showAlert(`DEBUG: Your user ID is ${userId}, username: ${username}`);
                 
                 // DIRECTLY USE EMBEDDED WALLET DATA - NO API NEEDED
-                const userId = String(tg.initDataUnsafe?.user?.id);
-                const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
+                const userIdString = String(userId);
+                console.log('🔍 Looking for user ID:', userIdString);
+                console.log('🔍 Available user IDs:', WALLET_DATA.map(w => w.user_id));
+                
+                const userWallet = WALLET_DATA.find(w => String(w.user_id) === userIdString);
                 
                 if (userWallet) {
                     tg.initDataUnsafe.user.wallet_address = userWallet.public_key;
                     console.log('✅ Found wallet from embedded data:', userWallet.public_key);
                     console.log('✅ User data:', tg.initDataUnsafe.user);
+                    
+                    // Show success alert
+                    tg.showAlert(`✅ Found your wallet: ${userWallet.public_key.substring(0, 8)}...`);
                 } else {
-                    console.log('❌ No wallet found for user ID:', userId);
+                    console.log('❌ No wallet found for user ID:', userIdString);
                     console.log('Available user IDs:', WALLET_DATA.map(w => w.user_id));
+                    
+                    // Show error alert
+                    tg.showAlert(`❌ No wallet found for user ID: ${userIdString}. Available IDs: ${WALLET_DATA.map(w => w.user_id).join(', ')}`);
                 }
             } else {
                 console.log('❌ NOT in Telegram - using fallback for testing');
