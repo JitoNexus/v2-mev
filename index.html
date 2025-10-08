@@ -1223,78 +1223,55 @@
             }
         }
 
-        // Copy wallet address
+        // Copy wallet address - SIMPLIFIED AND FIXED
         function copyWallet() {
-            // Try to get wallet address from multiple sources
-            let walletAddress = document.getElementById('walletAddress')?.textContent;
+            // ALWAYS get wallet from WALLET_DATA by user ID - MOST RELIABLE
+            const userId = String(tg?.initDataUnsafe?.user?.id);
+            const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
             
-            // Fallback: get from tg object
-            if (!walletAddress || walletAddress === '') {
-                walletAddress = tg?.initDataUnsafe?.user?.wallet_address;
-            }
-            
-            // Fallback: get from WALLET_DATA
-            if (!walletAddress || walletAddress === '') {
-                const userId = String(tg?.initDataUnsafe?.user?.id);
-                const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
-                if (userWallet) {
-                    walletAddress = userWallet.public_key;
-                }
-            }
-            
-            console.log('Copying wallet address:', walletAddress);
-            
-            if (!walletAddress || walletAddress === '') {
-                if (tg && tg.showAlert) {
-                    tg.showAlert('❌ No wallet address found');
-                } else {
-                    alert('❌ No wallet address found');
-                }
+            if (!userWallet) {
+                tg.showAlert('❌ No wallet found for your account');
                 return;
             }
             
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(walletAddress).then(() => {
-                    if (tg && tg.showAlert) {
-                        tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
-                    } else {
-                        alert('✅ Wallet copied!');
-                    }
-                }).catch((err) => {
-                    console.error('Copy failed:', err);
-                    // Fallback: Create a temporary textarea
-                    const textarea = document.createElement('textarea');
-                    textarea.value = walletAddress;
-                    textarea.style.position = 'fixed';
-                    textarea.style.opacity = '0';
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    
-                    if (tg && tg.showAlert) {
-                        tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
-                    } else {
-                        alert('✅ Wallet copied!');
-                    }
-                });
-            } else {
-                // Fallback: Create a temporary textarea
-                const textarea = document.createElement('textarea');
-                textarea.value = walletAddress;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                
-                if (tg && tg.showAlert) {
-                    tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
-                } else {
-                    alert('✅ Wallet copied!');
-                }
+            const walletAddress = userWallet.public_key;
+            console.log('🔥 COPYING wallet for user', userId, ':', walletAddress);
+            
+            // Use Telegram's clipboard API if available
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
             }
+            
+            // Create temporary textarea for reliable copy
+            const textarea = document.createElement('textarea');
+            textarea.value = walletAddress;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.width = '2em';
+            textarea.style.height = '2em';
+            textarea.style.padding = '0';
+            textarea.style.border = 'none';
+            textarea.style.outline = 'none';
+            textarea.style.boxShadow = 'none';
+            textarea.style.background = 'transparent';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    tg.showAlert('✅ Wallet copied:\n' + walletAddress.substring(0, 10) + '...' + walletAddress.substring(walletAddress.length - 4));
+                } else {
+                    tg.showAlert('❌ Copy failed. Please select and copy manually.');
+                }
+            } catch (err) {
+                console.error('Copy error:', err);
+                tg.showAlert('❌ Copy failed. Please select and copy manually.');
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         // Auto-show wallet for existing users after initialization
