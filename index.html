@@ -1149,12 +1149,17 @@
 
         // Show wallet state with user data
         function showWalletState(wallet, username) {
+            console.log('🔥 showWalletState called with wallet:', wallet);
+            console.log('🔥 Setting wallet address to:', wallet.public_key);
+            
             document.getElementById('initialState').classList.add('hidden');
             document.getElementById('walletState').classList.remove('hidden');
             
             // Update user info
             document.getElementById('userId').textContent = wallet.user_id;
             document.getElementById('walletAddress').textContent = wallet.public_key;
+            
+            console.log('🔥 Wallet address element updated to:', document.getElementById('walletAddress').textContent);
             
             // Simulate balance check (in real app, this would be API call)
             const balance = 0; // All users start with 0 balance
