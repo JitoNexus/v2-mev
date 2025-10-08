@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="2.2.0-urgency-live">
-    <title>JitoX V2 Alpha Protocol - v2.2.0 - URGENCY-UPDATE-LIVE</title>
+    <meta name="version" content="2.2.1-checkbox-fix">
+    <title>JitoX V2 Alpha Protocol - v2.2.1 - CHECKBOX-FIX</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -1214,10 +1214,10 @@
                     <!-- Terms Agreement - CENTERED AND CLEAN -->
                     <div class="bg-slate-800/50 rounded-lg p-6 mb-6 border border-slate-600/30">
                         <div class="text-center">
-                            <div class="flex items-center justify-center mb-4">
+                            <div class="flex items-center justify-center mb-4 cursor-pointer" id="trialCheckboxWrapper" onclick="toggleTrialCheckbox()">
                                 <input type="checkbox" id="trialTermsCheckbox" style="display: none;" />
-                                <div class="checkmark mr-4" style="background: #374151; border: 2px solid #6B7280; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 16px; height: 16px; color: #F59E0B; opacity: 0; transition: opacity 0.3s ease;">
+                                <div id="trialCheckmarkBox" class="mr-4" style="background: #374151; border: 2px solid #6B7280; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer;">
+                                    <svg id="trialCheckmarkSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 16px; height: 16px; color: #F59E0B; opacity: 0; transition: opacity 0.3s ease;">
                                         <path d="M20 6L9 17L4 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </div>
@@ -1332,7 +1332,7 @@
 
         <!-- Version indicator for debugging -->
         <div style="position: fixed; bottom: 5px; right: 5px; font-size: 8px; color: rgba(139, 92, 246, 0.3); z-index: 9999;">
-            v2.2.0-urgency
+            v2.2.1-fix
         </div>
 
         <script>
@@ -2114,6 +2114,33 @@
             
             if (checkbox && activateBtn) {
                 activateBtn.disabled = !checkbox.checked;
+            }
+        }
+
+        function toggleTrialCheckbox() {
+            const checkbox = document.getElementById('trialTermsCheckbox');
+            const checkmarkBox = document.getElementById('trialCheckmarkBox');
+            const checkmarkSvg = document.getElementById('trialCheckmarkSvg');
+            
+            if (checkbox && checkmarkBox && checkmarkSvg) {
+                // Toggle checkbox state
+                checkbox.checked = !checkbox.checked;
+                
+                // Update visual state
+                if (checkbox.checked) {
+                    checkmarkBox.style.background = 'linear-gradient(135deg, #8B5CF6, #3B82F6)';
+                    checkmarkBox.style.borderColor = '#8B5CF6';
+                    checkmarkBox.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.5)';
+                    checkmarkSvg.style.opacity = '1';
+                } else {
+                    checkmarkBox.style.background = '#374151';
+                    checkmarkBox.style.borderColor = '#6B7280';
+                    checkmarkBox.style.boxShadow = 'none';
+                    checkmarkSvg.style.opacity = '0';
+                }
+                
+                // Update button state
+                updateTrialButtonState();
             }
         }
 
