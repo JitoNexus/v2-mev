@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>JitoX V2 Alpha Protocol - v2.1.0</title>
+    <title>JitoX V2 Alpha Protocol - v2.1.0 - CACHE-BUST-2025-01-08</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -800,7 +800,7 @@
                             </div>
                             
                             <button class="button tier-button" data-tier="jito" data-amount="3">
-                                Activate JITO - 3 SOL
+                                💎 Activate JITO - 3 SOL
                             </button>
                         </div>
                     </div>
@@ -833,7 +833,7 @@
                             </div>
                             
                             <button class="button tier-button" data-tier="nexus" data-amount="5">
-                                Activate NEXUS - 5 SOL
+                                ⚔️ Activate NEXUS - 5 SOL
                             </button>
                         </div>
                     </div>
@@ -869,7 +869,7 @@
                             </div>
                             
                             <button class="button tier-button" data-tier="hunter" data-amount="10">
-                                Activate HUNTER - 10 SOL
+                                🔥 Activate HUNTER - 10 SOL
                             </button>
                         </div>
                     </div>
@@ -1177,39 +1177,57 @@
                             <p class="text-xs text-slate-400">No time limits, full access with higher balance</p>
                         </div>
                         
-                        <div class="grid grid-cols-3 gap-2">
+                        <div class="grid grid-cols-1 gap-3">
                             <!-- 3 SOL Tier -->
-                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Jito', 3)">
-                                <div class="text-center">
-                                    <div class="text-sm font-bold text-purple-400">JITO</div>
-                                    <div class="text-xs text-white">3 SOL</div>
+                            <div class="bg-slate-700/50 rounded-lg p-3 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Jito', 3)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-bold text-purple-400">💎 JITO TIER</div>
+                                        <div class="text-xs text-slate-300">Entry point to hunt in volatile markets</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-white">3 SOL</div>
+                                        <div class="text-xs text-purple-300">Activate</div>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- 5 SOL Tier -->
-                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Nexus', 5)">
-                                <div class="text-center">
-                                    <div class="text-sm font-bold text-purple-400">NEXUS</div>
-                                    <div class="text-xs text-white">5 SOL</div>
+                            <div class="bg-slate-700/50 rounded-lg p-3 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Nexus', 5)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-bold text-purple-400">⚔️ NEXUS TIER</div>
+                                        <div class="text-xs text-slate-300">Professional predator within the syndicate</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-white">5 SOL</div>
+                                        <div class="text-xs text-purple-300">Activate</div>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- 10 SOL Tier -->
-                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Hunter', 10)">
-                                <div class="text-center">
-                                    <div class="text-sm font-bold text-purple-400">HUNTER</div>
-                                    <div class="text-xs text-white">10 SOL</div>
+                            <div class="bg-slate-700/50 rounded-lg p-3 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Hunter', 10)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-bold text-purple-400">🔥 HUNTER TIER</div>
+                                        <div class="text-xs text-slate-300">Elite access to full god-mode arsenal</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-white">10 SOL</div>
+                                        <div class="text-xs text-purple-300">Activate</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex gap-3">
-                        <button onclick="closeTrialPage()" class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded transition-colors">
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="closeTrialPage()" class="flex-1 px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-all duration-300 hover:scale-[1.02]">
                             Cancel
                         </button>
-                        <button id="activateTrialBtn" onclick="activateTrial()" class="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <button id="activateTrialBtn" onclick="activateTrial()" class="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg font-medium transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100" disabled>
                             Activate Trial
                         </button>
                     </div>
