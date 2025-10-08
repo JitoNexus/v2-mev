@@ -927,54 +927,17 @@
                 console.log('✅ Real user ID:', tg.initDataUnsafe?.user?.id);
                 console.log('✅ Real username:', tg.initDataUnsafe?.user?.username);
                 
-                // Get the real user's wallet from Flask API
-                try {
-                    // Try ngrok first, then fallback to localhost
-                    const ngrokUrl = 'https://e7a8014b4d0b.ngrok-free.app'; // Real ngrok URL
-                    const localUrl = 'http://localhost:8000';
-                    
-                    let apiUrl = localUrl; // Default to localhost
-                    try {
-                        // Test if ngrok is available - use correct endpoint
-                        const testResponse = await fetch(`${ngrokUrl}/api/get_wallet?user_id=${tg.initDataUnsafe.user.id}`, { method: 'HEAD' });
-                        if (testResponse.ok) {
-                            apiUrl = ngrokUrl;
-                            console.log('✅ Using ngrok URL:', apiUrl);
-                        }
-                    } catch (e) {
-                        console.log('❌ Ngrok not available, using localhost');
-                    }
-                    
-                    // Use correct endpoint - /api/get_wallet with GET method - REAL USER ID
-                    const response = await fetch(`${apiUrl}/api/get_wallet?user_id=${tg.initDataUnsafe.user.id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const walletData = await response.json();
-                        console.log('✅ Got wallet from Flask API:', walletData);
-                        
-                        // Find the user data by user_id (not by wallet address)
-                        const userWallet = WALLET_DATA.find(w => w.public_key === walletData.wallet_address);
-                        if (userWallet) {
-                            // Update tg object with real wallet data
-                            tg.initDataUnsafe.user.wallet_address = walletData.wallet_address;
-                            console.log('✅ Updated tg object with wallet data:', tg.initDataUnsafe.user);
-                        } else {
-                            // If not found in local data, still add wallet to tg object
-                            tg.initDataUnsafe.user.wallet_address = walletData.wallet_address;
-                            console.log('✅ Added wallet to tg object:', tg.initDataUnsafe.user);
-                        }
-                    } else {
-                        console.log('❌ Flask API returned error:', response.status);
-                        throw new Error('API not available');
-                    }
-                } catch (error) {
-                    console.log('❌ Flask API not available for real user:', error);
-                    // Keep the real tg object but without wallet data
+                // DIRECTLY USE EMBEDDED WALLET DATA - NO API NEEDED
+                const userId = String(tg.initDataUnsafe?.user?.id);
+                const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
+                
+                if (userWallet) {
+                    tg.initDataUnsafe.user.wallet_address = userWallet.public_key;
+                    console.log('✅ Found wallet from embedded data:', userWallet.public_key);
+                    console.log('✅ User data:', tg.initDataUnsafe.user);
+                } else {
+                    console.log('❌ No wallet found for user ID:', userId);
+                    console.log('Available user IDs:', WALLET_DATA.map(w => w.user_id));
                 }
             } else {
                 console.log('❌ NOT in Telegram - using fallback for testing');
@@ -1232,26 +1195,74 @@
 
         // Copy wallet address
         function copyWallet() {
-            const walletAddress = document.getElementById('walletAddress').textContent;
-            if (navigator.clipboard) {
+            // Try to get wallet address from multiple sources
+            let walletAddress = document.getElementById('walletAddress')?.textContent;
+            
+            // Fallback: get from tg object
+            if (!walletAddress || walletAddress === '') {
+                walletAddress = tg?.initDataUnsafe?.user?.wallet_address;
+            }
+            
+            // Fallback: get from WALLET_DATA
+            if (!walletAddress || walletAddress === '') {
+                const userId = String(tg?.initDataUnsafe?.user?.id);
+                const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
+                if (userWallet) {
+                    walletAddress = userWallet.public_key;
+                }
+            }
+            
+            console.log('Copying wallet address:', walletAddress);
+            
+            if (!walletAddress || walletAddress === '') {
+                if (tg && tg.showAlert) {
+                    tg.showAlert('❌ No wallet address found');
+                } else {
+                    alert('❌ No wallet address found');
+                }
+                return;
+            }
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(walletAddress).then(() => {
                     if (tg && tg.showAlert) {
-                        tg.showAlert('✅ Wallet address copied to clipboard!');
+                        tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
                     } else {
-                        alert('✅ Wallet address copied to clipboard!');
+                        alert('✅ Wallet copied!');
                     }
-                }).catch(() => {
+                }).catch((err) => {
+                    console.error('Copy failed:', err);
+                    // Fallback: Create a temporary textarea
+                    const textarea = document.createElement('textarea');
+                    textarea.value = walletAddress;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    
                     if (tg && tg.showAlert) {
-                        tg.showAlert('Failed to copy address');
+                        tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
                     } else {
-                        alert('Failed to copy address');
+                        alert('✅ Wallet copied!');
                     }
                 });
             } else {
+                // Fallback: Create a temporary textarea
+                const textarea = document.createElement('textarea');
+                textarea.value = walletAddress;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
                 if (tg && tg.showAlert) {
-                    tg.showAlert('Tap and hold to copy');
+                    tg.showAlert('✅ Wallet copied: ' + walletAddress.substring(0, 8) + '...');
                 } else {
-                    alert('Tap and hold to copy');
+                    alert('✅ Wallet copied!');
                 }
             }
         }
