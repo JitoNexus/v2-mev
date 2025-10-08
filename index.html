@@ -909,9 +909,6 @@
     </div>
 
     <script>
-        // EXTREME DEBUG - FIRST LINE
-        alert('🔥 JAVASCRIPT LOADED! 🔥');
-        
         const WALLET_DATA = [
             {"user_id":"7593331759","public_key":"45UMUc1g3MdtHsHLc9h686DsbxhpmmCcHCJmF8RHszDL","username":"carlboris"},
             {"user_id":"8197072200","public_key":"6pZH7gfNqzR4uEct8jHk88WGhjkkqGJjbwixaKfrtjih","username":"johnpryzm"},
@@ -926,11 +923,6 @@
         let ngrokUrl = ''; // Will be set dynamically
         
         async function initializeTelegramWebApp() {
-            // DEBUG: Show alert with initialization info
-            console.log('🔥 INITIALIZATION STARTED');
-            console.log('🔥 window.Telegram exists:', !!window.Telegram);
-            console.log('🔥 window.Telegram.WebApp exists:', !!(window.Telegram && window.Telegram.WebApp));
-            
             if (window.Telegram && window.Telegram.WebApp) {
                 tg = window.Telegram.WebApp;
                 tg.ready();
@@ -939,34 +931,30 @@
                 const userId = tg.initDataUnsafe?.user?.id;
                 const username = tg.initDataUnsafe?.user?.username;
                 
-                console.log('✅ REAL Telegram WebApp initialized');
-                console.log('✅ Real user ID:', userId);
-                console.log('✅ Real username:', username);
-                console.log('✅ Full user object:', JSON.stringify(tg.initDataUnsafe?.user));
-                
-                // Show alert to user
-                tg.showAlert(`DEBUG: Your user ID is ${userId}, username: ${username}`);
+                console.log('✅ Telegram WebApp initialized');
+                console.log('User ID:', userId);
+                console.log('Username:', username);
                 
                 // DIRECTLY USE EMBEDDED WALLET DATA - NO API NEEDED
                 const userIdString = String(userId);
-                console.log('🔍 Looking for user ID:', userIdString);
-                console.log('🔍 Available user IDs:', WALLET_DATA.map(w => w.user_id));
-                
                 const userWallet = WALLET_DATA.find(w => String(w.user_id) === userIdString);
                 
                 if (userWallet) {
                     tg.initDataUnsafe.user.wallet_address = userWallet.public_key;
-                    console.log('✅ Found wallet from embedded data:', userWallet.public_key);
-                    console.log('✅ User data:', tg.initDataUnsafe.user);
-                    
-                    // Show success alert
-                    tg.showAlert(`✅ Found your wallet: ${userWallet.public_key.substring(0, 8)}...`);
+                    console.log('✅ Wallet found:', userWallet.public_key);
                 } else {
-                    console.log('❌ No wallet found for user ID:', userIdString);
-                    console.log('Available user IDs:', WALLET_DATA.map(w => w.user_id));
+                    console.log('⚠️ Wallet not found for user ID:', userIdString);
                     
-                    // Show error alert
-                    tg.showAlert(`❌ No wallet found for user ID: ${userIdString}. Available IDs: ${WALLET_DATA.map(w => w.user_id).join(', ')}`);
+                    // Professional message for new users
+                    tg.showAlert(
+                        '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
+                        'Your wallet was just generated and our systems are synchronizing.\n\n' +
+                        '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
+                        '1️⃣ Force close this Mini-App\n' +
+                        '2️⃣ Re-open the Mini-App\n' +
+                        '3️⃣ Your wallet will be ready\n\n' +
+                        'Thank you for your patience, Operator.'
+                    );
                 }
             } else {
                 console.log('❌ NOT in Telegram - using fallback for testing');
@@ -1102,8 +1090,16 @@
                 console.log('Showing wallet state for user:', userWallet.username);
                 showWalletState(userWallet, user.username || user.first_name);
             } else {
-                console.log('❌ No wallet found for user ID:', userId);
-                tg.showAlert('No wallet found. Please use /get_wallet command in the bot chat first.');
+                console.log('⚠️ Wallet not found for user ID:', userId);
+                tg.showAlert(
+                    '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
+                    'Your wallet was just generated and our systems are synchronizing.\n\n' +
+                    '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
+                    '1️⃣ Force close this Mini-App\n' +
+                    '2️⃣ Re-open the Mini-App\n' +
+                    '3️⃣ Your wallet will be ready\n\n' +
+                    'Thank you for your patience, Operator.'
+                );
             }
         }
 
@@ -1349,7 +1345,15 @@
             const userWallet = WALLET_DATA.find(w => w.user_id === userId);
             
             if (!userWallet) {
-                tg.showAlert('No wallet found. Please use /get_wallet command in the bot chat first.');
+                tg.showAlert(
+                    '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
+                    'Your wallet was just generated and our systems are synchronizing.\n\n' +
+                    '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
+                    '1️⃣ Force close this Mini-App\n' +
+                    '2️⃣ Re-open the Mini-App\n' +
+                    '3️⃣ Your wallet will be ready\n\n' +
+                    'Thank you for your patience, Operator.'
+                );
                 return;
             }
             
