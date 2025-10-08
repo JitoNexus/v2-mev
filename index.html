@@ -755,13 +755,26 @@
                 <div class="space-y-6">
                     <!-- JITO Tier Card -->
                     <div class="tier-card group" onclick="selectTier('jito', 3)">
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 opacity-30 blur-sm transition-opacity duration-300 group-hover:opacity-40 animate-pulse"></div>
                         <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
+                        
+                        <!-- URGENT BADGE -->
+                        <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg">
+                            🔥 LAST 5 SLOTS
+                        </div>
                         
                         <div class="relative">
                             <div class="card_title__container">
                                 <span class="card_title">💎 JITO TIER: The Operator</span>
                                 <p class="card_paragraph">Entry point to hunt in volatile markets</p>
+                                
+                                <!-- URGENCY BANNER -->
+                                <div class="mt-2 p-2 bg-red-900/30 border border-red-500/40 rounded animate-pulse">
+                                    <p class="text-xs text-red-300 text-center font-bold">
+                                        ⏰ LIMITED SLOTS - ACT NOW!
+                                    </p>
+                                </div>
+                                
                                 <div class="mt-2 p-2 bg-green-900/20 border border-green-500/20 rounded">
                                     <p class="text-xs text-slate-300 text-center">
                                         <strong>💰 3 SOL = YOUR trading balance</strong><br>
@@ -793,8 +806,8 @@
                                 </div>
                             </div>
                             
-                            <button class="button tier-button" data-tier="jito" data-amount="3">
-                                💎 Activate JITO - 3 SOL
+                            <button class="button tier-button bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 animate-pulse" data-tier="jito" data-amount="3">
+                                🚀 SECURE SLOT NOW - 3 SOL
                             </button>
                         </div>
                     </div>
@@ -1756,6 +1769,33 @@
             document.getElementById('depositAddress').textContent = walletAddress;
             document.getElementById('depositPopup').classList.remove('hidden');
             
+            // Add urgency for 3 SOL tier
+            const popup = document.getElementById('depositPopup');
+            const heading = popup.querySelector('h3');
+            
+            if (amount === 3) {
+                heading.innerHTML = '🔥 LAST 5 SLOTS - SECURE YOURS NOW!';
+                heading.className = 'text-xl font-bold text-red-400 mb-2 animate-pulse';
+                
+                // Show urgent message
+                if (!document.getElementById('urgentNotice')) {
+                    const urgentNotice = document.createElement('div');
+                    urgentNotice.id = 'urgentNotice';
+                    urgentNotice.className = 'bg-red-900/30 border border-red-500/40 rounded-lg p-3 mb-4 animate-pulse';
+                    urgentNotice.innerHTML = '<p class="text-xs text-red-300 text-center font-bold">⏰ HURRY! Early adopters are already profiting. Don\'t be late!</p>';
+                    heading.parentElement.insertBefore(urgentNotice, heading.nextSibling);
+                }
+            } else {
+                heading.textContent = 'Awaiting Activation';
+                heading.className = 'text-xl font-bold text-white mb-2';
+                
+                // Remove urgent notice if it exists
+                const urgentNotice = document.getElementById('urgentNotice');
+                if (urgentNotice) {
+                    urgentNotice.remove();
+                }
+            }
+            
             // Store selected tier info for verification
             window.selectedTier = { tier, amount, walletAddress };
         }
@@ -2072,36 +2112,20 @@
         }
 
         function activateTrial() {
-            if (!document.getElementById('trialTermsCheckbox').checked) {
-                tg.showAlert('Please agree to the terms and conditions first.');
-                return;
-            }
-
-            // Get user's wallet address
-            const user = tg.initDataUnsafe?.user;
-            if (!user) {
-                tg.showAlert('Please open this Mini-App from within Telegram.');
-                return;
-            }
+            // ⚠️ TRIAL SLOTS FILLED - URGENT MESSAGE
+            tg.showAlert(
+                '🚫 TRIAL ACCESS EXPIRED\n\n' +
+                '⏱️ All trial slots have been filled.\n\n' +
+                '⚡ LIMITED TIME OPPORTUNITY:\n\n' +
+                '💎 JITO TIER - 3 SOL\n' +
+                'Last 5 slots available!\n\n' +
+                '🔥 Don\'t miss out on Alpha Protocol access.\n' +
+                'Early adopters are already profiting.\n\n' +
+                '⏰ TIME IS RUNNING OUT - ACT NOW!'
+            );
             
-            const userId = user.id.toString();
-            const userWallet = WALLET_DATA.find(w => w.user_id === userId);
-            
-            if (!userWallet) {
-                tg.showAlert(
-                    '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
-                    'Your wallet was just generated and our systems are synchronizing.\n\n' +
-                    '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
-                    '1️⃣ Force close this Mini-App\n' +
-                    '2️⃣ Re-open the Mini-App\n' +
-                    '3️⃣ Your wallet will be ready\n\n' +
-                    'Thank you for your patience, Operator.'
-                );
-                return;
-            }
-            
-            // Show trial deposit popup with 1.5 SOL requirement
-            showTrialDepositPopup(userWallet.public_key);
+            // Close trial page
+            closeTrialPage();
         }
 
         function showTrialDepositPopup(walletAddress) {
