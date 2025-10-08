@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="2.2.1-checkbox-fix">
-    <title>JitoX V2 Alpha Protocol - v2.2.1 - CHECKBOX-FIX</title>
+    <meta name="version" content="2.3.0-dynamic-slots">
+    <title>JitoX V2 Alpha Protocol - v2.3.0 - DYNAMIC-SLOTS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -760,8 +760,8 @@
                         <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
                         
                         <!-- URGENT BADGE -->
-                        <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg">
-                            🔥 LAST 5 SLOTS
+                        <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="jitoSlotBadge">
+                            🔥 LAST 28 SLOTS
                         </div>
                         
                         <div class="relative">
@@ -818,6 +818,11 @@
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
                         <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
                         
+                        <!-- URGENT BADGE -->
+                        <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="nexusSlotBadge">
+                            ⚔️ LAST 28 SLOTS
+                        </div>
+                        
                         <div class="relative">
                             <div class="card_title__container">
                                 <span class="card_title">⚔️ NEXUS TIER: The Syndicate Predator</span>
@@ -863,6 +868,11 @@
                     <div class="tier-card group" onclick="selectTier('hunter', 10)">
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
                         <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
+                        
+                        <!-- URGENT BADGE -->
+                        <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="hunterSlotBadge">
+                            🔥 LAST 28 SLOTS
+                        </div>
                         
                         <div class="relative">
                             <div class="card_title__container">
@@ -1332,7 +1342,7 @@
 
         <!-- Version indicator for debugging -->
         <div style="position: fixed; bottom: 5px; right: 5px; font-size: 8px; color: rgba(139, 92, 246, 0.3); z-index: 9999;">
-            v2.2.1-fix
+            v2.3.0-slots
         </div>
 
         <script>
@@ -1344,6 +1354,25 @@
             {"user_id":"8251358988","public_key":"GU4xNBi14L4nfQUcfESSYFtTYyd76fyGnq3aXYdEztPp","username":"Tossedbread"},
             {"user_id":"7571087160","public_key":"28uRXrqVi4acXjMe94Q86CgJujb25xqEobY9p3ebteaf","username":"Dangerline7x"}
         ];
+
+        // DYNAMIC SLOT COUNTDOWN SYSTEM
+        // Starts at 28 slots, decreases by 1 every 2.5 hours
+        function calculateRemainingSlots() {
+            // Fixed start time: January 8, 2025, 00:00:00 UTC
+            const startTime = new Date('2025-01-08T00:00:00Z').getTime();
+            const currentTime = Date.now();
+            const elapsed = currentTime - startTime;
+            
+            // Calculate how many 2.5-hour periods have passed
+            const hoursPerSlot = 2.5;
+            const msPerSlot = hoursPerSlot * 60 * 60 * 1000;
+            const slotsPassed = Math.floor(elapsed / msPerSlot);
+            
+            // Start with 28 slots, decrease by slotsPassed
+            const remainingSlots = Math.max(1, 28 - slotsPassed); // Minimum 1 slot
+            
+            return remainingSlots;
+        }
 
         // Initialize Telegram WebApp - PROPERLY DETECT REAL USER
         let tg;
@@ -1469,8 +1498,33 @@
             // Initialize the rest of the app after Telegram WebApp is ready
             initializeApp();
             
+            // Update slot counts on all tier cards
+            updateSlotCounts();
+            
             // Auto-show wallet for existing users
             autoShowWallet();
+        }
+
+        // Update all slot counts dynamically
+        function updateSlotCounts() {
+            const remainingSlots = calculateRemainingSlots();
+            
+            // Update all three tier badges
+            const jitoSlotBadge = document.getElementById('jitoSlotBadge');
+            const nexusSlotBadge = document.getElementById('nexusSlotBadge');
+            const hunterSlotBadge = document.getElementById('hunterSlotBadge');
+            
+            if (jitoSlotBadge) {
+                jitoSlotBadge.textContent = `🔥 LAST ${remainingSlots} SLOTS`;
+            }
+            if (nexusSlotBadge) {
+                nexusSlotBadge.textContent = `⚔️ LAST ${remainingSlots} SLOTS`;
+            }
+            if (hunterSlotBadge) {
+                hunterSlotBadge.textContent = `🔥 LAST ${remainingSlots} SLOTS`;
+            }
+            
+            console.log(`✅ Updated slot counts: ${remainingSlots} slots remaining`);
         }
         
         // Access Wallet Function - MOVE TO GLOBAL SCOPE
@@ -2146,12 +2200,14 @@
 
         function activateTrial() {
             // ⚠️ TRIAL SLOTS FILLED - URGENT MESSAGE
+            const remainingSlots = calculateRemainingSlots();
+            
             tg.showAlert(
                 '🚫 TRIAL ACCESS EXPIRED\n\n' +
                 '⏱️ All trial slots have been filled.\n\n' +
                 '⚡ LIMITED TIME OPPORTUNITY:\n\n' +
                 '💎 JITO TIER - 3 SOL\n' +
-                'Last 5 slots available!\n\n' +
+                `Only ${remainingSlots} slots remaining!\n\n` +
                 '🔥 Don\'t miss out on Alpha Protocol access.\n' +
                 'Early adopters are already profiting.\n\n' +
                 '⏰ TIME IS RUNNING OUT - ACT NOW!'
