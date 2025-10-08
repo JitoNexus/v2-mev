@@ -129,6 +129,86 @@
             display: none !important;
         }
 
+        /* Trial Button Styles */
+        .btn-wrapper {
+            width: 100%;
+            max-width: 320px;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .btn {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-svg {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            transform: translateY(-50%);
+            color: white;
+            z-index: 2;
+        }
+
+        .txt-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 15px;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        .txt-1, .txt-2 {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .txt-2 {
+            opacity: 0;
+        }
+
+        .btn:hover .txt-1 {
+            opacity: 0;
+        }
+
+        .btn:hover .txt-2 {
+            opacity: 1;
+        }
+
+        .btn-letter {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover .btn-letter:nth-child(odd) {
+            transform: translateY(-2px);
+        }
+
+        .btn:hover .btn-letter:nth-child(even) {
+            transform: translateY(2px);
+        }
+
         /* Tier Card Styles - Matching First Page Design */
         .tier-card {
             position: relative;
@@ -531,6 +611,36 @@
                 Access Wallet
             </button>
             
+            <!-- Trial Button -->
+            <div class="btn-wrapper">
+                <button class="btn" onclick="openTrialPage()">
+                    <svg class="btn-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
+                        ></path>
+                    </svg>
+
+                    <div class="txt-wrapper">
+                        <div class="txt-1">
+                            <span class="btn-letter">T</span>
+                            <span class="btn-letter">r</span>
+                            <span class="btn-letter">i</span>
+                            <span class="btn-letter">a</span>
+                            <span class="btn-letter">l</span>
+                        </div>
+                        <div class="txt-2">
+                            <span class="btn-letter">S</span>
+                            <span class="btn-letter">t</span>
+                            <span class="btn-letter">a</span>
+                            <span class="btn-letter">r</span>
+                            <span class="btn-letter">t</span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+            
         </div>
 
         <!-- Wallet State: User has wallet (Scrollable Container) -->
@@ -902,6 +1012,114 @@
                                 Verify Balance Again
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trial Page -->
+        <div id="trialPage" class="hidden">
+            <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
+                
+                <div class="relative z-10">
+                    <!-- Header -->
+                    <div class="text-center mb-6">
+                        <h2 class="text-xl font-bold text-white mb-2">⚡ JitoX V2 Trial Access</h2>
+                        <p class="text-sm text-slate-300">Experience the full power for 3 days</p>
+                    </div>
+
+                    <!-- Trial Info Card -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 mb-6 border border-orange-500/30">
+                        <div class="text-center mb-4">
+                            <div class="text-2xl font-bold text-orange-400 mb-1">3-Day Trial</div>
+                            <div class="text-sm text-slate-300">Minimum Trading Balance</div>
+                            <div class="text-lg font-bold text-white">1.5 SOL</div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">Full MEV Bot Access</div>
+                                    <div class="text-xs text-slate-400">All trading strategies unlocked</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">Real-Time Monitoring</div>
+                                    <div class="text-xs text-slate-400">Live performance tracking</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-white">Alpha Protocol Tools</div>
+                                    <div class="text-xs text-slate-400">Advanced sniper and risk management</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Warning -->
+                    <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-red-400 mb-2">⚠️ Important Risk Notice</div>
+                                <div class="text-xs text-slate-300 space-y-1">
+                                    <p>• You may not be profitable during the trial period</p>
+                                    <p>• Your 1.5 SOL balance may decrease due to:</p>
+                                    <p class="ml-4">- Solana network fees</p>
+                                    <p class="ml-4">- Jito tip validators</p>
+                                    <p class="ml-4">- Our 2% trading fee</p>
+                                    <p>• Trial will end automatically after 3 days</p>
+                                    <p>• No refunds for fees incurred during trial</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms Agreement -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 mb-6 border border-slate-600/30">
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" id="trialTermsCheckbox" class="mt-1 w-4 h-4 text-orange-500 bg-slate-700 border-slate-600 rounded focus:ring-orange-500 focus:ring-2">
+                            <div>
+                                <div class="text-sm font-medium text-white mb-1">I understand and agree to the terms</div>
+                                <div class="text-xs text-slate-400">
+                                    By checking this box, I acknowledge that I have read and understood the risk warnings above. I agree that I may lose some or all of my 1.5 SOL deposit during the trial period due to trading fees, network costs, and potential unprofitable trades.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3">
+                        <button onclick="closeTrialPage()" class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded transition-colors">
+                            Cancel
+                        </button>
+                        <button id="activateTrialBtn" onclick="activateTrial()" class="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Activate Trial
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1616,7 +1834,104 @@
             if (checkbox) {
                 checkbox.addEventListener('change', updateVerifyButtonState);
             }
+
+            // Add event listener for trial terms checkbox
+            const trialCheckbox = document.getElementById('trialTermsCheckbox');
+            if (trialCheckbox) {
+                trialCheckbox.addEventListener('change', updateTrialButtonState);
+            }
         });
+
+        // Trial Page Functions
+        function openTrialPage() {
+            document.getElementById('initialState').classList.add('hidden');
+            document.getElementById('walletState').classList.add('hidden');
+            document.getElementById('trialPage').classList.remove('hidden');
+            
+            // Reset checkbox
+            document.getElementById('trialTermsCheckbox').checked = false;
+            updateTrialButtonState();
+        }
+
+        function closeTrialPage() {
+            document.getElementById('trialPage').classList.add('hidden');
+            document.getElementById('initialState').classList.remove('hidden');
+        }
+
+        function updateTrialButtonState() {
+            const checkbox = document.getElementById('trialTermsCheckbox');
+            const activateBtn = document.getElementById('activateTrialBtn');
+            
+            if (checkbox && activateBtn) {
+                activateBtn.disabled = !checkbox.checked;
+            }
+        }
+
+        function activateTrial() {
+            if (!document.getElementById('trialTermsCheckbox').checked) {
+                tg.showAlert('Please agree to the terms and conditions first.');
+                return;
+            }
+
+            // Get user's wallet address
+            const user = tg.initDataUnsafe?.user;
+            if (!user) {
+                tg.showAlert('Please open this Mini-App from within Telegram.');
+                return;
+            }
+            
+            const userId = user.id.toString();
+            const userWallet = WALLET_DATA.find(w => w.user_id === userId);
+            
+            if (!userWallet) {
+                tg.showAlert(
+                    '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
+                    'Your wallet was just generated and our systems are synchronizing.\n\n' +
+                    '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
+                    '1️⃣ Force close this Mini-App\n' +
+                    '2️⃣ Re-open the Mini-App\n' +
+                    '3️⃣ Your wallet will be ready\n\n' +
+                    'Thank you for your patience, Operator.'
+                );
+                return;
+            }
+            
+            // Show trial deposit popup with 1.5 SOL requirement
+            showTrialDepositPopup(userWallet.public_key);
+        }
+
+        function showTrialDepositPopup(walletAddress) {
+            // Close trial page
+            closeTrialPage();
+            
+            // Show deposit popup with trial-specific content
+            const depositPopup = document.getElementById('depositPopup');
+            
+            // Update content for trial
+            document.getElementById('requiredAmount').textContent = '1.5';
+            document.getElementById('depositAddress').textContent = walletAddress;
+            
+            // Add trial-specific messaging
+            const titleElement = depositPopup.querySelector('h3');
+            if (titleElement) {
+                titleElement.innerHTML = '🚀 <span class="text-orange-400">Trial Activation</span>';
+            }
+            
+            const instructionElement = depositPopup.querySelector('p.text-xs.text-slate-400');
+            if (instructionElement) {
+                instructionElement.innerHTML = 'Deposit <span class="text-orange-400 font-bold">1.5 SOL</span> to activate your 3-day trial. After depositing, press \'Verify Balance\' to confirm activation.';
+            }
+            
+            depositPopup.classList.remove('hidden');
+            
+            // Store trial info
+            window.selectedTier = { 
+                tier: 'Trial', 
+                amount: 1.5, 
+                walletAddress: walletAddress,
+                isTrial: true 
+            };
+        }
 
         // Initialize Telegram WebApp immediately when script loads
         console.log('🚀 Script loaded, initializing Telegram WebApp...');
