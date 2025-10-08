@@ -209,6 +209,29 @@
             transform: translateY(2px);
         }
 
+        /* Trial Checkbox Styles */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-wrapper:hover .checkmark {
+            border-color: #F59E0B !important;
+            background: #374151 !important;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark {
+            background: #F59E0B !important;
+            border-color: #F59E0B !important;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked + .checkmark svg {
+            opacity: 1 !important;
+            color: white !important;
+        }
+
         /* Tier Card Styles - Matching First Page Design */
         .tier-card {
             position: relative;
@@ -1048,7 +1071,7 @@
         </div>
 
         <!-- Trial Page -->
-        <div id="trialPage" class="hidden">
+        <div id="trialPage" class="hidden" style="max-height: 80vh; overflow-y: auto; padding-right: 10px;">
             <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
                 
@@ -1131,15 +1154,20 @@
 
                     <!-- Terms Agreement -->
                     <div class="bg-slate-800/50 rounded-lg p-4 mb-6 border border-slate-600/30">
-                        <div class="flex items-start gap-3">
-                            <input type="checkbox" id="trialTermsCheckbox" class="mt-1 w-4 h-4 text-orange-500 bg-slate-700 border-slate-600 rounded focus:ring-orange-500 focus:ring-2">
-                            <div>
+                        <label class="checkbox-wrapper cursor-pointer">
+                            <input type="checkbox" id="trialTermsCheckbox" style="display: none;" />
+                            <div class="checkmark" style="background: #374151; border: 2px solid #6B7280; width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width: 14px; height: 14px; color: #F59E0B; opacity: 0; transition: opacity 0.3s ease;">
+                                    <path d="M20 6L9 17L4 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </div>
+                            <div style="margin-left: 12px; flex: 1;">
                                 <div class="text-sm font-medium text-white mb-1">I understand and agree to the terms</div>
                                 <div class="text-xs text-slate-400">
                                     By checking this box, I acknowledge that I have read and understood the risk warnings above. I agree that I may lose some or all of my 1.5 SOL deposit during the trial period due to trading fees, network costs, and potential unprofitable trades.
                                 </div>
                             </div>
-                        </div>
+                        </label>
                     </div>
 
                     <!-- Alternative: Regular Tier Options -->
@@ -1903,6 +1931,20 @@
             const trialCheckbox = document.getElementById('trialTermsCheckbox');
             if (trialCheckbox) {
                 trialCheckbox.addEventListener('change', updateTrialButtonState);
+                
+                // Also add click listener to the wrapper for better mobile support
+                const checkboxWrapper = trialCheckbox.closest('.checkbox-wrapper');
+                if (checkboxWrapper) {
+                    checkboxWrapper.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        trialCheckbox.checked = !trialCheckbox.checked;
+                        updateTrialButtonState();
+                        
+                        // Trigger change event
+                        const event = new Event('change', { bubbles: true });
+                        trialCheckbox.dispatchEvent(event);
+                    });
+                }
             }
         });
 
