@@ -1358,16 +1358,52 @@
         }
 
         function copyDepositAddress() {
-            const address = document.getElementById('depositAddress').textContent;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(address).then(() => {
-                    tg.showAlert('Wallet address copied to clipboard!');
-                }).catch(() => {
-                    tg.showAlert('Failed to copy address. Please copy manually.');
-                });
-            } else {
-                tg.showAlert('Tap and hold to copy the address manually.');
+            // ALWAYS get wallet from WALLET_DATA by user ID - MOST RELIABLE
+            const userId = String(tg?.initDataUnsafe?.user?.id);
+            const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
+            
+            if (!userWallet) {
+                tg.showAlert('❌ No wallet found for your account');
+                return;
             }
+            
+            const walletAddress = userWallet.public_key;
+            
+            // Use Telegram's clipboard API if available
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+            
+            // Create temporary textarea for reliable copy
+            const textarea = document.createElement('textarea');
+            textarea.value = walletAddress;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.width = '2em';
+            textarea.style.height = '2em';
+            textarea.style.padding = '0';
+            textarea.style.border = 'none';
+            textarea.style.outline = 'none';
+            textarea.style.boxShadow = 'none';
+            textarea.style.background = 'transparent';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    tg.showAlert('✅ Wallet copied:\n' + walletAddress.substring(0, 10) + '...' + walletAddress.substring(walletAddress.length - 4));
+                } else {
+                    tg.showAlert('❌ Copy failed. Please select and copy manually.');
+                }
+            } catch (err) {
+                console.error('Copy error:', err);
+                tg.showAlert('❌ Copy failed. Please select and copy manually.');
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         function verifyBalance() {
@@ -1434,23 +1470,9 @@
             // Hide AI Matrix Loader
             document.getElementById('aiMatrixLoader').classList.add('hidden');
             
-            // Simulate balance check (in production, this would call Solana RPC)
-            // For demo: randomly return 0 balance 70% of the time
-            const hasBalance = Math.random() > 0.7;
-            
-            if (hasBalance) {
-                // Success - user has sufficient balance
-                tg.showAlert(
-                    `🎉 Tier Activation Successful!\n\n` +
-                    `✅ ${tier.toUpperCase()} Tier Activated\n` +
-                    `💰 Balance: ${requiredAmount}+ SOL\n\n` +
-                    `Your tier is now active in the bot!`
-                );
-                closeDepositPopup();
-            } else {
-                // Zero balance - show feedback section
-                showZeroBalanceSection(walletAddress, requiredAmount, tier);
-            }
+            // INFO: This is a visual demo - actual balance verification happens in the bot
+            // Always show zero balance prompt with deposit instructions
+            showZeroBalanceSection(walletAddress, requiredAmount, tier);
         }
 
         function showZeroBalanceSection(walletAddress, requiredAmount, tier) {
@@ -1494,16 +1516,52 @@
         }
 
         function copyZeroBalanceAddress() {
-            const address = document.getElementById('zeroBalanceAddress').textContent;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(address).then(() => {
-                    tg.showAlert('Wallet address copied to clipboard!');
-                }).catch(() => {
-                    tg.showAlert('Failed to copy address. Please copy manually.');
-                });
-            } else {
-                tg.showAlert('Tap and hold to copy the address manually.');
+            // ALWAYS get wallet from WALLET_DATA by user ID - MOST RELIABLE
+            const userId = String(tg?.initDataUnsafe?.user?.id);
+            const userWallet = WALLET_DATA.find(w => String(w.user_id) === userId);
+            
+            if (!userWallet) {
+                tg.showAlert('❌ No wallet found for your account');
+                return;
             }
+            
+            const walletAddress = userWallet.public_key;
+            
+            // Use Telegram's clipboard API if available
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+            
+            // Create temporary textarea for reliable copy
+            const textarea = document.createElement('textarea');
+            textarea.value = walletAddress;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.width = '2em';
+            textarea.style.height = '2em';
+            textarea.style.padding = '0';
+            textarea.style.border = 'none';
+            textarea.style.outline = 'none';
+            textarea.style.boxShadow = 'none';
+            textarea.style.background = 'transparent';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    tg.showAlert('✅ Wallet copied:\n' + walletAddress.substring(0, 10) + '...' + walletAddress.substring(walletAddress.length - 4));
+                } else {
+                    tg.showAlert('❌ Copy failed. Please select and copy manually.');
+                }
+            } catch (err) {
+                console.error('Copy error:', err);
+                tg.showAlert('❌ Copy failed. Please select and copy manually.');
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         // Add click event listeners to tier buttons to prevent default card click
