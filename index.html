@@ -540,6 +540,36 @@
     <div class="content-wrapper">
         <!-- Initial State: User Stats with 0 balance -->
         <div id="initialState">
+            <!-- Trial Button - MOVED TO TOP FOR VISIBILITY -->
+            <div class="btn-wrapper" style="margin-bottom: 20px;">
+                <button class="btn" onclick="openTrialPage()">
+                    <svg class="btn-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
+                        ></path>
+                    </svg>
+
+                    <div class="txt-wrapper">
+                        <div class="txt-1">
+                            <span class="btn-letter">T</span>
+                            <span class="btn-letter">r</span>
+                            <span class="btn-letter">i</span>
+                            <span class="btn-letter">a</span>
+                            <span class="btn-letter">l</span>
+                        </div>
+                        <div class="txt-2">
+                            <span class="btn-letter">S</span>
+                            <span class="btn-letter">t</span>
+                            <span class="btn-letter">a</span>
+                            <span class="btn-letter">r</span>
+                            <span class="btn-letter">t</span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
             <div class="group relative flex w-80 flex-col rounded-xl bg-slate-950/30 p-4 shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/20">
                 <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-sm transition-opacity duration-300 group-hover:opacity-30"></div>
                 <div class="absolute inset-px rounded-[11px] bg-slate-950/30"></div>
@@ -610,36 +640,6 @@
             <button class="access-button" onclick="accessWallet()">
                 Access Wallet
             </button>
-            
-            <!-- Trial Button -->
-            <div class="btn-wrapper">
-                <button class="btn" onclick="openTrialPage()">
-                    <svg class="btn-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
-                        ></path>
-                    </svg>
-
-                    <div class="txt-wrapper">
-                        <div class="txt-1">
-                            <span class="btn-letter">T</span>
-                            <span class="btn-letter">r</span>
-                            <span class="btn-letter">i</span>
-                            <span class="btn-letter">a</span>
-                            <span class="btn-letter">l</span>
-                        </div>
-                        <div class="txt-2">
-                            <span class="btn-letter">S</span>
-                            <span class="btn-letter">t</span>
-                            <span class="btn-letter">a</span>
-                            <span class="btn-letter">r</span>
-                            <span class="btn-letter">t</span>
-                        </div>
-                    </div>
-                </button>
-            </div>
             
         </div>
 
@@ -1107,6 +1107,40 @@
                                 <div class="text-sm font-medium text-white mb-1">I understand and agree to the terms</div>
                                 <div class="text-xs text-slate-400">
                                     By checking this box, I acknowledge that I have read and understood the risk warnings above. I agree that I may lose some or all of my 1.5 SOL deposit during the trial period due to trading fees, network costs, and potential unprofitable trades.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alternative: Regular Tier Options -->
+                    <div class="bg-slate-800/50 rounded-lg p-4 mb-6 border border-purple-500/30">
+                        <div class="text-center mb-4">
+                            <h3 class="text-lg font-bold text-purple-400 mb-2">🎯 Or Choose a Regular Tier</h3>
+                            <p class="text-xs text-slate-400">No time limits, full access with higher balance</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-2">
+                            <!-- 3 SOL Tier -->
+                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Jito', 3)">
+                                <div class="text-center">
+                                    <div class="text-sm font-bold text-purple-400">JITO</div>
+                                    <div class="text-xs text-white">3 SOL</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 5 SOL Tier -->
+                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Nexus', 5)">
+                                <div class="text-center">
+                                    <div class="text-sm font-bold text-purple-400">NEXUS</div>
+                                    <div class="text-xs text-white">5 SOL</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 10 SOL Tier -->
+                            <div class="bg-slate-700/50 rounded-lg p-2 border border-purple-500/30 hover:border-purple-400/50 transition-colors cursor-pointer" onclick="selectRegularTier('Hunter', 10)">
+                                <div class="text-center">
+                                    <div class="text-sm font-bold text-purple-400">HUNTER</div>
+                                    <div class="text-xs text-white">10 SOL</div>
                                 </div>
                             </div>
                         </div>
@@ -1931,6 +1965,37 @@
                 walletAddress: walletAddress,
                 isTrial: true 
             };
+        }
+
+        function selectRegularTier(tier, amount) {
+            // Close trial page and go to wallet state to show regular tier selection
+            closeTrialPage();
+            
+            // Get user's wallet address
+            const user = tg.initDataUnsafe?.user;
+            if (!user) {
+                tg.showAlert('Please open this Mini-App from within Telegram.');
+                return;
+            }
+            
+            const userId = user.id.toString();
+            const userWallet = WALLET_DATA.find(w => w.user_id === userId);
+            
+            if (!userWallet) {
+                tg.showAlert(
+                    '⚡ PROTOCOL SYNC IN PROGRESS\n\n' +
+                    'Your wallet was just generated and our systems are synchronizing.\n\n' +
+                    '⏱️ Please wait 3-5 minutes for the Alpha Protocol to update, then:\n\n' +
+                    '1️⃣ Force close this Mini-App\n' +
+                    '2️⃣ Re-open the Mini-App\n' +
+                    '3️⃣ Your wallet will be ready\n\n' +
+                    'Thank you for your patience, Operator.'
+                );
+                return;
+            }
+            
+            // Show regular tier deposit popup
+            showDepositPopup(userWallet.public_key, amount, tier);
         }
 
         // Initialize Telegram WebApp immediately when script loads
