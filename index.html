@@ -2615,22 +2615,12 @@
             //     console.error('Failed to get user bio:', error);
             // }
             
-            // CURRENT TESTING MODE - SIMULATE REAL VERIFICATION:
-            // For testing, we'll simulate different scenarios
-            const testScenarios = [
-                "I am using @jitoxmev_bot for MEV trading. Crypto enthusiast.",
-                "Proud user of @jitoxmev_bot - best MEV bot ever!",
-                "Using @jitoxmev_bot for alpha trading",
-                "Crypto trader using @jitoxmev_bot",
-                null, // No bot in bio
-                null, // No bot in bio
-                null  // No bot in bio
-            ];
-            
-            // Return random scenario for testing
-            const randomScenario = testScenarios[Math.floor(Math.random() * testScenarios.length)];
-            console.log('Simulated bio check result:', randomScenario);
-            return randomScenario;
+            // CURRENT TESTING MODE:
+            // Since we can't actually check Telegram bios from the browser,
+            // we always return null to simulate "no bot in bio"
+            // This forces users to actually add @jitoxmev_bot to their bio
+            console.log('Bio check: No bot found (testing mode)');
+            return null; // Always fails in testing mode - user must add bot to bio
         }
 
         // Claim rewards
