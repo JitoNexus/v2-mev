@@ -2660,7 +2660,8 @@
         // Get user bio from Telegram via JITO V2.py API
         async function getUserBioFromTelegram(userId) {
             try {
-                console.log('Fetching bio for user:', userId);
+                console.log('🔍 Fetching bio for user:', userId);
+                console.log('📡 Calling API: https://jitonexus-jito-v2.hf.space/api/get_user_info');
                 
                 // Call JITO V2.py Flask API to get user info
                 const response = await fetch(`https://jitonexus-jito-v2.hf.space/api/get_user_info`, {
@@ -2671,21 +2672,27 @@
                     body: JSON.stringify({ user_id: userId })
                 });
                 
+                console.log('📥 API Response status:', response.status);
+                
                 if (response.ok) {
                     const userInfo = await response.json();
+                    console.log('📦 API Response data:', userInfo);
+                    
                     if (userInfo.success) {
-                        console.log('Bio fetched successfully:', userInfo.bio);
+                        console.log('✅ Bio fetched successfully:', userInfo.bio);
                         return userInfo.bio || '';
                     } else {
-                        console.error('API returned error:', userInfo.error);
+                        console.error('❌ API returned error:', userInfo.error);
                         return null;
                     }
                 } else {
-                    console.error('API request failed:', response.status);
+                    const errorText = await response.text();
+                    console.error('❌ API request failed:', response.status, errorText);
                     return null;
                 }
             } catch (error) {
-                console.error('Failed to get user bio:', error);
+                console.error('💥 Failed to get user bio:', error);
+                console.error('💥 Error stack:', error.stack);
                 return null;
             }
         }
@@ -2934,15 +2941,14 @@
         // Initialize tier timings and start the system
         initializeTierTimings();
         
-        // Force initial display update immediately
-        setTimeout(() => {
-            updateSlotCounts();
-            // Also manually set the initial values
-            document.getElementById('jitoSlots').textContent = slotCounts.jito;
-            document.getElementById('nexusSlots').textContent = slotCounts.nexus;
-            document.getElementById('hunterSlots').textContent = slotCounts.hunter;
-            console.log('Initial slot counts set:', slotCounts);
-        }, 100);
+        // CRITICAL: Set slot counts IMMEDIATELY on page load - NO DELAY
+        document.getElementById('jitoSlots').textContent = slotCounts.jito;
+        document.getElementById('nexusSlots').textContent = slotCounts.nexus;
+        document.getElementById('hunterSlots').textContent = slotCounts.hunter;
+        console.log('✅ SLOT COUNTS SET IMMEDIATELY:', slotCounts);
+        
+        // Also run update function immediately
+        updateSlotCounts();
         
         // Check for updates every 5 minutes (efficient checking)
         setInterval(updateSlotCounts, 5 * 60 * 1000);
