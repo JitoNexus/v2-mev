@@ -778,7 +778,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="jitoSlotBadge">
-                            🔥 LAST 28 SLOTS
+                            🔥 LAST <span id="jitoSlots">28</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -837,7 +837,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="nexusSlotBadge">
-                            ⚔️ LAST 28 SLOTS
+                            ⚔️ LAST <span id="nexusSlots">12</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -888,7 +888,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="hunterSlotBadge">
-                            🔥 LAST 28 SLOTS
+                            🔥 LAST <span id="hunterSlots">7</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -2528,26 +2528,95 @@
                 return;
             }
 
-            // Simulate verification (in real implementation, this would check Telegram API)
-            const bioText = `I am using @jitoxmev_bot for MEV trading. Proud user of @jitoxmev_bot. Crypto enthusiast.`;
-            const hasBot = bioText.toLowerCase().includes('@jitoxmev_bot');
+            // Show loading state
+            const verifyButton = document.getElementById('verifyButton');
+            const originalText = verifyButton.textContent;
+            verifyButton.textContent = '🔍 VERIFYING...';
+            verifyButton.disabled = true;
 
-            if (hasBot) {
-                if (!rewardData.isActive) {
-                    rewardData.isActive = true;
-                    rewardData.startDate = new Date().toISOString();
-                    rewardData.daysActive = 1;
-                    rewardData.currentTier = 1;
-                    tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
-                } else {
-                    tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+            // In a real implementation, this would make an API call to check the user's actual Telegram bio
+            // For now, we'll simulate a proper verification that actually checks for the bot mention
+            setTimeout(() => {
+                // Simulate API call to get user's actual bio
+                // This is where you would integrate with Telegram Bot API to get user info
+                const userBio = getUserBioFromTelegram(user.id);
+                
+                if (!userBio) {
+                    tg.showAlert('❌ Verification Failed\n\nUnable to retrieve your Telegram bio.\n\nPlease ensure your profile is public and try again.');
+                    verifyButton.textContent = originalText;
+                    verifyButton.disabled = false;
+                    return;
                 }
-                rewardData.lastVerification = new Date().toISOString();
-                saveRewardData();
-                updateRewardDisplay();
-            } else {
-                tg.showAlert('❌ Verification Failed\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
-            }
+
+                // Check if bio contains @jitoxmev_bot (case insensitive)
+                const hasBot = userBio.toLowerCase().includes('@jitoxmev_bot');
+                
+                if (hasBot) {
+                    if (!rewardData.isActive) {
+                        rewardData.isActive = true;
+                        rewardData.startDate = new Date().toISOString();
+                        rewardData.daysActive = 1;
+                        rewardData.currentTier = 1;
+                        rewardData.totalEarned = 0; // Reset total earned
+                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                    } else {
+                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                    }
+                    rewardData.lastVerification = new Date().toISOString();
+                    saveRewardData();
+                    updateRewardDisplay();
+                } else {
+                    // If user had active rewards but removed bot from bio, reset everything
+                    if (rewardData.isActive) {
+                        rewardData.isActive = false;
+                        rewardData.startDate = null;
+                        rewardData.daysActive = 0;
+                        rewardData.currentTier = 1;
+                        rewardData.totalEarned = 0;
+                        rewardData.lastVerification = null;
+                        saveRewardData();
+                        updateRewardDisplay();
+                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nYour reward system has been reset.\n\nAdd @jitoxmev_bot to your bio and try again.');
+                    } else {
+                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                    }
+                }
+                
+                verifyButton.textContent = originalText;
+                verifyButton.disabled = false;
+            }, 1500); // Simulate API delay
+        }
+
+        // Get user bio from Telegram (replace with real API call)
+        async function getUserBioFromTelegram(userId) {
+            // PRODUCTION INTEGRATION POINT:
+            // Replace this function with actual Telegram Bot API call
+            // 
+            // Example implementation using JITO V2.py Flask API:
+            // try {
+            //     const response = await fetch(`http://localhost:8000/api/get_user_info`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({ user_id: userId })
+            //     });
+            //     
+            //     if (response.ok) {
+            //         const userInfo = await response.json();
+            //         return userInfo.bio || userInfo.about || '';
+            //     }
+            // } catch (error) {
+            //     console.error('Failed to get user bio:', error);
+            // }
+            
+            // CURRENT TESTING MODE:
+            // Return null to simulate no bot in bio (verification will fail)
+            // Return a string with @jitoxmev_bot to test success case
+            return null; // Simulates user not having @jitoxmev_bot in bio
+            
+            // Uncomment below to test success case:
+            // return "I am using @jitoxmev_bot for MEV trading. Crypto enthusiast.";
         }
 
         // Claim rewards
@@ -2568,17 +2637,46 @@
 
         // Show reward history
         function showRewardHistory() {
-            const history = [
-                { date: '2024-01-15', amount: 0.001, tier: 1 },
-                { date: '2024-01-16', amount: 0.001, tier: 1 },
-                { date: '2024-01-17', amount: 0.001, tier: 1 }
-            ];
+            if (!rewardData.isActive || rewardData.totalEarned <= 0) {
+                tg.showAlert('📊 REWARD HISTORY\n\nNo rewards earned yet.\n\nAdd @jitoxmev_bot to your bio and start earning!');
+                return;
+            }
+
+            // Calculate actual reward history based on days active
+            const history = [];
+            const startDate = new Date(rewardData.startDate);
+            const totalDays = rewardData.daysActive;
+            
+            for (let day = 1; day <= totalDays; day++) {
+                const dayDate = new Date(startDate.getTime() + (day - 1) * 24 * 60 * 60 * 1000);
+                const dayTier = Math.floor((day - 1) / 30) + 1;
+                const dayReward = 0.001 + (dayTier - 1) * 0.0005;
+                
+                history.push({
+                    date: dayDate.toISOString().split('T')[0],
+                    amount: dayReward,
+                    tier: dayTier
+                });
+            }
 
             let historyText = '📊 REWARD HISTORY\n\n';
-            history.forEach(entry => {
-                historyText += `${entry.date}: +${entry.amount.toFixed(4)} SOL (Tier ${entry.tier})\n`;
-            });
-            historyText += '\nTotal Earned: 0.003 SOL';
+            if (history.length > 10) {
+                // Show only last 10 entries if too many
+                const recentHistory = history.slice(-10);
+                historyText += 'Recent entries:\n';
+                recentHistory.forEach(entry => {
+                    historyText += `${entry.date}: +${entry.amount.toFixed(4)} SOL (Tier ${entry.tier})\n`;
+                });
+                historyText += `\n... and ${history.length - 10} more days\n`;
+            } else {
+                history.forEach(entry => {
+                    historyText += `${entry.date}: +${entry.amount.toFixed(4)} SOL (Tier ${entry.tier})\n`;
+                });
+            }
+            
+            historyText += `\nTotal Earned: ${rewardData.totalEarned.toFixed(4)} SOL`;
+            historyText += `\nDays Active: ${rewardData.daysActive}`;
+            historyText += `\nCurrent Tier: ${rewardData.currentTier}`;
 
             tg.showAlert(historyText);
         }
@@ -2668,6 +2766,48 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Dynamic Slot Management System
+        let slotCounts = {
+            jito: 28,    // 3 SOL tier - higher slots (more accessible)
+            nexus: 12,   // 5 SOL tier - medium slots 
+            hunter: 7    // 10 SOL tier - lower slots (premium)
+        };
+
+        function updateSlotCounts() {
+            // Update each tier's slot count
+            Object.keys(slotCounts).forEach(tier => {
+                const currentSlots = slotCounts[tier];
+                
+                // If slots reach 1, randomly increase to create urgency
+                if (currentSlots <= 1) {
+                    // Different ranges for each tier
+                    if (tier === 'jito') {
+                        slotCounts[tier] = Math.floor(Math.random() * 15) + 8; // 8-22 slots
+                    } else if (tier === 'nexus') {
+                        slotCounts[tier] = Math.floor(Math.random() * 8) + 5;  // 5-12 slots
+                    } else if (tier === 'hunter') {
+                        slotCounts[tier] = Math.floor(Math.random() * 5) + 3;  // 3-7 slots
+                    }
+                } else {
+                    // Randomly decrease slots (simulate people joining)
+                    const decreaseChance = Math.random();
+                    if (decreaseChance < 0.3) { // 30% chance to decrease
+                        slotCounts[tier] = Math.max(1, currentSlots - Math.floor(Math.random() * 3) - 1);
+                    }
+                }
+                
+                // Update the display
+                const slotElement = document.getElementById(`${tier}Slots`);
+                if (slotElement) {
+                    slotElement.textContent = slotCounts[tier];
+                }
+            });
+        }
+
+        // Initialize slot counts and start dynamic updates
+        updateSlotCounts();
+        setInterval(updateSlotCounts, 15000); // Update every 15 seconds
 
         // Initialize reward system
         loadRewardData();
