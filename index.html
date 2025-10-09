@@ -2534,12 +2534,11 @@
             verifyButton.textContent = '🔍 VERIFYING...';
             verifyButton.disabled = true;
 
-            // Simulate API call to get user's actual bio
-            setTimeout(() => {
+            // Call the API to get user's actual bio
+            (async () => {
                 try {
-                    // Simulate API call to get user's actual bio
-                    // This is where you would integrate with Telegram Bot API to get user info
-                    const userBio = getUserBioFromTelegram(user.id);
+                    // Call JITO V2.py API to get user's actual bio
+                    const userBio = await getUserBioFromTelegram(user.id);
                     
                     if (!userBio) {
                         tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
@@ -2589,38 +2588,40 @@
                     verifyButton.textContent = originalText;
                     verifyButton.disabled = false;
                 }
-            }, 1500); // Simulate API delay
+            })();
         }
 
-        // Get user bio from Telegram (replace with real API call)
-        function getUserBioFromTelegram(userId) {
-            // PRODUCTION INTEGRATION POINT:
-            // Replace this function with actual Telegram Bot API call
-            // 
-            // Example implementation using JITO V2.py Flask API:
-            // try {
-            //     const response = await fetch(`http://localhost:8000/api/get_user_info`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({ user_id: userId })
-            //     });
-            //     
-            //     if (response.ok) {
-            //         const userInfo = await response.json();
-            //         return userInfo.bio || userInfo.about || '';
-            //     }
-            // } catch (error) {
-            //     console.error('Failed to get user bio:', error);
-            // }
-            
-            // CURRENT TESTING MODE:
-            // Since we can't actually check Telegram bios from the browser,
-            // we always return null to simulate "no bot in bio"
-            // This forces users to actually add @jitoxmev_bot to their bio
-            console.log('Bio check: No bot found (testing mode)');
-            return null; // Always fails in testing mode - user must add bot to bio
+        // Get user bio from Telegram via JITO V2.py API
+        async function getUserBioFromTelegram(userId) {
+            try {
+                console.log('Fetching bio for user:', userId);
+                
+                // Call JITO V2.py Flask API to get user info
+                const response = await fetch(`https://jitonexus-jito-v2.hf.space/api/get_user_info`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                
+                if (response.ok) {
+                    const userInfo = await response.json();
+                    if (userInfo.success) {
+                        console.log('Bio fetched successfully:', userInfo.bio);
+                        return userInfo.bio || '';
+                    } else {
+                        console.error('API returned error:', userInfo.error);
+                        return null;
+                    }
+                } else {
+                    console.error('API request failed:', response.status);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Failed to get user bio:', error);
+                return null;
+            }
         }
 
         // Claim rewards
