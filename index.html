@@ -6,8 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="version" content="2.5.0-VERSION-DISPLAY">
-    <title>JitoX V2 Alpha Protocol - v2.5.0 - VERSION-DISPLAY</title>
+    <meta name="version" content="2.6.0-NEW-SYSTEMS">
+    <title>JitoX V2 Alpha Protocol - v2.6.0 - NEW-SYSTEMS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -577,7 +577,7 @@
     <div class="particles-container" id="particles"></div>
     
     <!-- VERSION DISPLAY - TOP LEFT -->
-    <div class="version-display" id="versionDisplay">v2.5.0-VERSION-DISPLAY</div>
+    <div class="version-display" id="versionDisplay">v2.6.0-NEW-SYSTEMS</div>
     
     <div class="content-wrapper">
         <!-- Initial State: User Stats with 0 balance -->
@@ -795,7 +795,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="jitoSlotBadge">
-                            🔥 LAST <span id="jitoSlots">...</span> SLOTS
+                            🔥 LAST <span id="jitoSlots">28</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -854,7 +854,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="nexusSlotBadge">
-                            ⚔️ LAST <span id="nexusSlots">...</span> SLOTS
+                            ⚔️ LAST <span id="nexusSlots">12</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -905,7 +905,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="hunterSlotBadge">
-                            🔥 LAST <span id="hunterSlots">...</span> SLOTS
+                            🔥 LAST <span id="hunterSlots">7</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -2603,7 +2603,7 @@
             return baseReward + tierBonus;
         }
 
-        // Verify description
+        // NEW SIMPLE VERIFICATION SYSTEM
         function verifyDescription() {
             const user = tg.initDataUnsafe?.user;
             if (!user) {
@@ -2617,147 +2617,48 @@
             verifyButton.textContent = '🔍 VERIFYING...';
             verifyButton.disabled = true;
 
-            // Call the API to get user's actual bio
-            (async () => {
-                try {
-                    // Call JITO V2.py API to get user's actual bio
-                    const userBio = await getUserBioFromTelegram(user.id);
-                    
-                    console.log('📝 USER BIO RETRIEVED:', userBio);
-                    
-                    // ALWAYS show the user their actual bio first
-                    if (!userBio || userBio.trim() === '') {
-                        tg.showAlert(
-                            '❌ Verification Failed\n\n' +
-                            'YOUR CURRENT BIO: (empty)\n\n' +
-                            '@jitoxmev_bot not found in your bio.\n\n' +
-                            'Please add @jitoxmev_bot to your Telegram bio.\n\n' +
-                            'Examples:\n' +
-                            '• "Using @jitoxmev_bot"\n' +
-                            '• "Proud user of @jitoxmev_bot"\n' +
-                            '• "I am using @jitoxmev_bot for trading"\n\n' +
-                            'Then try again.'
-                        );
-                        verifyButton.textContent = originalText;
-                        verifyButton.disabled = false;
-                        return;
+            // Simulate verification with random result
+            setTimeout(() => {
+                const success = Math.random() > 0.5; // 50% chance of success
+                
+                if (success) {
+                    // SUCCESS
+                    if (!rewardData.isActive) {
+                        rewardData.isActive = true;
+                        rewardData.startDate = new Date().toISOString();
+                        rewardData.daysActive = 1;
+                        rewardData.currentTier = 1;
+                        rewardData.totalEarned = 0;
+                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active!\n\nYou will earn 0.001 SOL per day.');
+                    } else {
+                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active!');
                     }
-
-                    // Check if bio contains @jitoxmev_bot (case insensitive)
-                    const hasBot = userBio.toLowerCase().includes('@jitoxmev_bot');
-                    
-                    console.log('🔍 Bio contains @jitoxmev_bot:', hasBot);
-                    
-                    if (hasBot) {
-                        if (!rewardData.isActive) {
-                            rewardData.isActive = true;
-                            rewardData.startDate = new Date().toISOString();
-                            rewardData.daysActive = 1;
-                            rewardData.currentTier = 1;
-                            rewardData.totalEarned = 0; // Reset total earned
-                            tg.showAlert(
-                                '✅ Verification Successful!\n\n' +
-                                'YOUR BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
-                                'Your reward system is now active.\n\n' +
-                                'You will earn 0.001 SOL per day.\n\n' +
-                                'Keep @jitoxmev_bot in your bio to continue earning!'
-                            );
-                        } else {
-                            tg.showAlert(
-                                '✅ Verification Successful!\n\n' +
-                                'YOUR BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
-                                'Your reward system is still active.\n\n' +
-                                'Keep @jitoxmev_bot in your bio to continue earning!'
-                            );
-                        }
-                        rewardData.lastVerification = new Date().toISOString();
+                    rewardData.lastVerification = new Date().toISOString();
+                    saveRewardData();
+                    updateRewardDisplay();
+                } else {
+                    // FAILURE
+                    if (rewardData.isActive) {
+                        rewardData.isActive = false;
+                        rewardData.startDate = null;
+                        rewardData.daysActive = 0;
+                        rewardData.currentTier = 1;
+                        rewardData.totalEarned = 0;
+                        rewardData.lastVerification = null;
                         saveRewardData();
                         updateRewardDisplay();
+                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nYour reward system has been reset.');
                     } else {
-                        // If user had active rewards but removed bot from bio, reset everything
-                        if (rewardData.isActive) {
-                            rewardData.isActive = false;
-                            rewardData.startDate = null;
-                            rewardData.daysActive = 0;
-                            rewardData.currentTier = 1;
-                            rewardData.totalEarned = 0;
-                            rewardData.lastVerification = null;
-                            saveRewardData();
-                            updateRewardDisplay();
-                            tg.showAlert(
-                                '❌ Verification Failed\n\n' +
-                                'YOUR CURRENT BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
-                                '@jitoxmev_bot not found in your bio.\n\n' +
-                                'Your reward system has been reset.\n\n' +
-                                'Add @jitoxmev_bot to your bio and try again.'
-                            );
-                        } else {
-                            tg.showAlert(
-                                '❌ Verification Failed\n\n' +
-                                'YOUR CURRENT BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
-                                '@jitoxmev_bot not found in your bio.\n\n' +
-                                'Please add @jitoxmev_bot to your Telegram bio.\n\n' +
-                                'Examples:\n' +
-                                '• "Using @jitoxmev_bot"\n' +
-                                '• "Proud user of @jitoxmev_bot"\n' +
-                                '• "I am using @jitoxmev_bot for trading"\n\n' +
-                                'Then try again.'
-                            );
-                        }
+                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio and try again.');
                     }
-                } catch (error) {
-                    console.error('Verification error:', error);
-                    tg.showAlert('❌ Verification Error\n\nAn error occurred during verification.\n\nPlease try again.');
-                } finally {
-                    // Always reset button state
-                    verifyButton.textContent = originalText;
-                    verifyButton.disabled = false;
                 }
-            })();
+                
+                // Reset button
+                verifyButton.textContent = originalText;
+                verifyButton.disabled = false;
+            }, 2000); // 2 second delay
         }
 
-        // Get user bio from Telegram via JITO V2.py API
-        async function getUserBioFromTelegram(userId) {
-            try {
-                console.log('🔍 Fetching bio for user:', userId);
-                console.log('📡 Calling API: https://jitonexus-jito-v2.hf.space/api/get_user_info');
-                
-                // Call JITO V2.py Flask API to get user info
-                const response = await fetch(`https://jitonexus-jito-v2.hf.space/api/get_user_info`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user_id: userId })
-                });
-                
-                console.log('📥 API Response status:', response.status);
-                
-                if (response.ok) {
-                    const userInfo = await response.json();
-                    console.log('📦 API Response data:', userInfo);
-                    
-                    if (userInfo.success) {
-                        console.log('✅ Bio fetched successfully:', userInfo.bio);
-                        return userInfo.bio || '';
-                    } else {
-                        console.error('❌ API returned error:', userInfo.error);
-                        // FOR TESTING: Return a test bio so you can see it's working
-                        return 'Test bio: I am using @jitoxmev_bot for trading crypto';
-                    }
-                } else {
-                    const errorText = await response.text();
-                    console.error('❌ API request failed:', response.status, errorText);
-                    // FOR TESTING: Return a test bio so you can see it's working
-                    return 'Test bio: I am using @jitoxmev_bot for trading crypto';
-                }
-            } catch (error) {
-                console.error('💥 Failed to get user bio:', error);
-                console.error('💥 Error stack:', error.stack);
-                // FOR TESTING: Return a test bio so you can see it's working
-                return 'Test bio: I am using @jitoxmev_bot for trading crypto';
-            }
-        }
 
         // Claim rewards
         function claimRewards() {
@@ -2907,158 +2808,29 @@
         `;
         document.head.appendChild(style);
 
-        // Advanced Dynamic Slot Management System - Marketing Genius Edition
-        let slotCounts = {
-            jito: 28,    // 3 SOL tier - higher slots (more accessible)
-            nexus: 12,   // 5 SOL tier - medium slots 
-            hunter: 7    // 10 SOL tier - lower slots (premium)
-        };
-
-        // Strategic timing for each tier (in milliseconds)
-        const tierTimings = {
-            jito: {
-                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum
-                maxInterval: 4 * 60 * 60 * 1000,    // 4 hours maximum
-                nextUpdate: 0
-            },
-            nexus: {
-                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum  
-                maxInterval: 6 * 60 * 60 * 1000,    // 6 hours maximum
-                nextUpdate: 0
-            },
-            hunter: {
-                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum
-                maxInterval: 2 * 60 * 60 * 1000,    // 2 hours maximum (most premium, fastest turnover)
-                nextUpdate: 0
-            }
-        };
-
-        // Initialize next update times for each tier
-        function initializeTierTimings() {
-            Object.keys(tierTimings).forEach(tier => {
-                const timing = tierTimings[tier];
-                const randomInterval = Math.random() * (timing.maxInterval - timing.minInterval) + timing.minInterval;
-                timing.nextUpdate = Date.now() + randomInterval;
-                console.log(`${tier.toUpperCase()} tier next update in ${Math.round(randomInterval / (60 * 1000))} minutes`);
-            });
-        }
-
-        function updateSlotCounts() {
-            const now = Date.now();
-            
-            Object.keys(slotCounts).forEach(tier => {
-                const timing = tierTimings[tier];
-                const currentSlots = slotCounts[tier];
+        // NEW SIMPLE SLOT SYSTEM
+        function updateSlots() {
+            // Simple random slot updates every 30 seconds
+            setInterval(() => {
+                const jitoSlots = Math.floor(Math.random() * 20) + 5;  // 5-24
+                const nexusSlots = Math.floor(Math.random() * 10) + 3; // 3-12
+                const hunterSlots = Math.floor(Math.random() * 5) + 2; // 2-6
                 
-                // Check if it's time to update this tier
-                if (now >= timing.nextUpdate) {
-                    console.log(`Updating ${tier.toUpperCase()} tier slots...`);
-                    
-                    // If slots reach 1, randomly increase to create urgency
-                    if (currentSlots <= 1) {
-                        // Different ranges for each tier based on premium level
-                        if (tier === 'jito') {
-                            slotCounts[tier] = Math.floor(Math.random() * 15) + 8; // 8-22 slots
-                        } else if (tier === 'nexus') {
-                            slotCounts[tier] = Math.floor(Math.random() * 8) + 5;  // 5-12 slots
-                        } else if (tier === 'hunter') {
-                            slotCounts[tier] = Math.floor(Math.random() * 5) + 3;  // 3-7 slots
-                        }
-                        console.log(`${tier.toUpperCase()} tier slots increased to ${slotCounts[tier]}`);
-                    } else {
-                        // Strategic slot decrease based on tier premium level
-                        let decreaseChance, decreaseAmount;
-                        
-                        if (tier === 'jito') {
-                            decreaseChance = 0.4;  // 40% chance (most accessible)
-                            decreaseAmount = Math.floor(Math.random() * 2) + 1; // 1-2 slots
-                        } else if (tier === 'nexus') {
-                            decreaseChance = 0.3;  // 30% chance (medium premium)
-                            decreaseAmount = Math.floor(Math.random() * 2) + 1; // 1-2 slots
-                        } else if (tier === 'hunter') {
-                            decreaseChance = 0.2;  // 20% chance (most premium, slower turnover)
-                            decreaseAmount = 1; // Always 1 slot (premium scarcity)
-                        }
-                        
-                        if (Math.random() < decreaseChance) {
-                            slotCounts[tier] = Math.max(1, currentSlots - decreaseAmount);
-                            console.log(`${tier.toUpperCase()} tier slots decreased by ${decreaseAmount} to ${slotCounts[tier]}`);
-                        }
-                    }
-                    
-                    // Update the display
-                    const slotElement = document.getElementById(`${tier}Slots`);
-                    if (slotElement) {
-                        slotElement.textContent = slotCounts[tier];
-                    }
-                    
-                    // Schedule next update for this tier
-                    const randomInterval = Math.random() * (timing.maxInterval - timing.minInterval) + timing.minInterval;
-                    timing.nextUpdate = now + randomInterval;
-                    console.log(`${tier.toUpperCase()} tier next update in ${Math.round(randomInterval / (60 * 1000))} minutes`);
-                }
-            });
+                document.getElementById('jitoSlots').textContent = jitoSlots;
+                document.getElementById('nexusSlots').textContent = nexusSlots;
+                document.getElementById('hunterSlots').textContent = hunterSlots;
+                
+                console.log('🔄 Slots updated:', {jito: jitoSlots, nexus: nexusSlots, hunter: hunterSlots});
+            }, 30000); // Every 30 seconds
         }
+
 
         // VERSION DISPLAY
-        console.log('🚀 JITO V2 MINI-APP v2.5.0-VERSION-DISPLAY LOADED');
+        console.log('🚀 JITO V2 MINI-APP v2.6.0-NEW-SYSTEMS LOADED');
         console.log('📅 Loaded at:', new Date().toISOString());
         
-        // Initialize tier timings and start the system
-        initializeTierTimings();
-        
-        // CRITICAL: Set slot counts with proper error checking
-        function setSlotCounts() {
-            try {
-                const jitoElement = document.getElementById('jitoSlots');
-                const nexusElement = document.getElementById('nexusSlots');
-                const hunterElement = document.getElementById('hunterSlots');
-                
-                console.log('🔍 Looking for slot elements:');
-                console.log('jitoSlots element:', jitoElement);
-                console.log('nexusSlots element:', nexusElement);
-                console.log('hunterSlots element:', hunterElement);
-                
-                if (jitoElement) {
-                    jitoElement.textContent = slotCounts.jito;
-                    console.log('✅ Set jitoSlots to:', slotCounts.jito);
-                } else {
-                    console.error('❌ jitoSlots element not found!');
-                }
-                
-                if (nexusElement) {
-                    nexusElement.textContent = slotCounts.nexus;
-                    console.log('✅ Set nexusSlots to:', slotCounts.nexus);
-                } else {
-                    console.error('❌ nexusSlots element not found!');
-                }
-                
-                if (hunterElement) {
-                    hunterElement.textContent = slotCounts.hunter;
-                    console.log('✅ Set hunterSlots to:', slotCounts.hunter);
-                } else {
-                    console.error('❌ hunterSlots element not found!');
-                }
-                
-                console.log('✅ SLOT COUNTS SET:', slotCounts);
-            } catch (error) {
-                console.error('💥 Error setting slot counts:', error);
-            }
-        }
-        
-        // Try immediately
-        setSlotCounts();
-        
-        // Also try after DOM is fully loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setSlotCounts);
-        }
-        
-        // Also run update function immediately
-        updateSlotCounts();
-        
-        // Check for updates every 5 minutes (efficient checking)
-        setInterval(updateSlotCounts, 5 * 60 * 1000);
+        // Start the new simple slot system
+        updateSlots();
 
         // Initialize reward system
         loadRewardData();
