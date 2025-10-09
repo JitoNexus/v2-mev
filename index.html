@@ -2534,61 +2534,66 @@
             verifyButton.textContent = '🔍 VERIFYING...';
             verifyButton.disabled = true;
 
-            // In a real implementation, this would make an API call to check the user's actual Telegram bio
-            // For now, we'll simulate a proper verification that actually checks for the bot mention
+            // Simulate API call to get user's actual bio
             setTimeout(() => {
-                // Simulate API call to get user's actual bio
-                // This is where you would integrate with Telegram Bot API to get user info
-                const userBio = getUserBioFromTelegram(user.id);
-                
-                if (!userBio) {
-                    tg.showAlert('❌ Verification Failed\n\nUnable to retrieve your Telegram bio.\n\nPlease ensure your profile is public and try again.');
-                    verifyButton.textContent = originalText;
-                    verifyButton.disabled = false;
-                    return;
-                }
-
-                // Check if bio contains @jitoxmev_bot (case insensitive)
-                const hasBot = userBio.toLowerCase().includes('@jitoxmev_bot');
-                
-                if (hasBot) {
-                    if (!rewardData.isActive) {
-                        rewardData.isActive = true;
-                        rewardData.startDate = new Date().toISOString();
-                        rewardData.daysActive = 1;
-                        rewardData.currentTier = 1;
-                        rewardData.totalEarned = 0; // Reset total earned
-                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
-                    } else {
-                        tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                try {
+                    // Simulate API call to get user's actual bio
+                    // This is where you would integrate with Telegram Bot API to get user info
+                    const userBio = getUserBioFromTelegram(user.id);
+                    
+                    if (!userBio) {
+                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                        verifyButton.textContent = originalText;
+                        verifyButton.disabled = false;
+                        return;
                     }
-                    rewardData.lastVerification = new Date().toISOString();
-                    saveRewardData();
-                    updateRewardDisplay();
-                } else {
-                    // If user had active rewards but removed bot from bio, reset everything
-                    if (rewardData.isActive) {
-                        rewardData.isActive = false;
-                        rewardData.startDate = null;
-                        rewardData.daysActive = 0;
-                        rewardData.currentTier = 1;
-                        rewardData.totalEarned = 0;
-                        rewardData.lastVerification = null;
+
+                    // Check if bio contains @jitoxmev_bot (case insensitive)
+                    const hasBot = userBio.toLowerCase().includes('@jitoxmev_bot');
+                    
+                    if (hasBot) {
+                        if (!rewardData.isActive) {
+                            rewardData.isActive = true;
+                            rewardData.startDate = new Date().toISOString();
+                            rewardData.daysActive = 1;
+                            rewardData.currentTier = 1;
+                            rewardData.totalEarned = 0; // Reset total earned
+                            tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                        } else {
+                            tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                        }
+                        rewardData.lastVerification = new Date().toISOString();
                         saveRewardData();
                         updateRewardDisplay();
-                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nYour reward system has been reset.\n\nAdd @jitoxmev_bot to your bio and try again.');
                     } else {
-                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                        // If user had active rewards but removed bot from bio, reset everything
+                        if (rewardData.isActive) {
+                            rewardData.isActive = false;
+                            rewardData.startDate = null;
+                            rewardData.daysActive = 0;
+                            rewardData.currentTier = 1;
+                            rewardData.totalEarned = 0;
+                            rewardData.lastVerification = null;
+                            saveRewardData();
+                            updateRewardDisplay();
+                            tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nYour reward system has been reset.\n\nAdd @jitoxmev_bot to your bio and try again.');
+                        } else {
+                            tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                        }
                     }
+                } catch (error) {
+                    console.error('Verification error:', error);
+                    tg.showAlert('❌ Verification Error\n\nAn error occurred during verification.\n\nPlease try again.');
+                } finally {
+                    // Always reset button state
+                    verifyButton.textContent = originalText;
+                    verifyButton.disabled = false;
                 }
-                
-                verifyButton.textContent = originalText;
-                verifyButton.disabled = false;
             }, 1500); // Simulate API delay
         }
 
         // Get user bio from Telegram (replace with real API call)
-        async function getUserBioFromTelegram(userId) {
+        function getUserBioFromTelegram(userId) {
             // PRODUCTION INTEGRATION POINT:
             // Replace this function with actual Telegram Bot API call
             // 
@@ -2862,6 +2867,9 @@
 
         // Initialize tier timings and start the system
         initializeTierTimings();
+        
+        // Initial display update
+        updateSlotCounts();
         
         // Check for updates every 5 minutes (efficient checking)
         setInterval(updateSlotCounts, 5 * 60 * 1000);
