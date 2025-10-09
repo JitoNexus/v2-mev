@@ -778,7 +778,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="jitoSlotBadge">
-                            🔥 LAST <span id="jitoSlots">28</span> SLOTS
+                            🔥 LAST <span id="jitoSlots">...</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -837,7 +837,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="nexusSlotBadge">
-                            ⚔️ LAST <span id="nexusSlots">12</span> SLOTS
+                            ⚔️ LAST <span id="nexusSlots">...</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -888,7 +888,7 @@
                         
                         <!-- URGENT BADGE -->
                         <div class="absolute -top-2 -right-2 z-20 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full text-white text-xs font-bold animate-pulse shadow-lg" id="hunterSlotBadge">
-                            🔥 LAST <span id="hunterSlots">7</span> SLOTS
+                            🔥 LAST <span id="hunterSlots">...</span> SLOTS
                         </div>
                         
                         <div class="relative">
@@ -2606,8 +2606,21 @@
                     // Call JITO V2.py API to get user's actual bio
                     const userBio = await getUserBioFromTelegram(user.id);
                     
-                    if (!userBio) {
-                        tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                    console.log('📝 USER BIO RETRIEVED:', userBio);
+                    
+                    // ALWAYS show the user their actual bio first
+                    if (!userBio || userBio.trim() === '') {
+                        tg.showAlert(
+                            '❌ Verification Failed\n\n' +
+                            'YOUR CURRENT BIO: (empty)\n\n' +
+                            '@jitoxmev_bot not found in your bio.\n\n' +
+                            'Please add @jitoxmev_bot to your Telegram bio.\n\n' +
+                            'Examples:\n' +
+                            '• "Using @jitoxmev_bot"\n' +
+                            '• "Proud user of @jitoxmev_bot"\n' +
+                            '• "I am using @jitoxmev_bot for trading"\n\n' +
+                            'Then try again.'
+                        );
                         verifyButton.textContent = originalText;
                         verifyButton.disabled = false;
                         return;
@@ -2616,6 +2629,8 @@
                     // Check if bio contains @jitoxmev_bot (case insensitive)
                     const hasBot = userBio.toLowerCase().includes('@jitoxmev_bot');
                     
+                    console.log('🔍 Bio contains @jitoxmev_bot:', hasBot);
+                    
                     if (hasBot) {
                         if (!rewardData.isActive) {
                             rewardData.isActive = true;
@@ -2623,9 +2638,20 @@
                             rewardData.daysActive = 1;
                             rewardData.currentTier = 1;
                             rewardData.totalEarned = 0; // Reset total earned
-                            tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                            tg.showAlert(
+                                '✅ Verification Successful!\n\n' +
+                                'YOUR BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
+                                'Your reward system is now active.\n\n' +
+                                'You will earn 0.001 SOL per day.\n\n' +
+                                'Keep @jitoxmev_bot in your bio to continue earning!'
+                            );
                         } else {
-                            tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                            tg.showAlert(
+                                '✅ Verification Successful!\n\n' +
+                                'YOUR BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
+                                'Your reward system is still active.\n\n' +
+                                'Keep @jitoxmev_bot in your bio to continue earning!'
+                            );
                         }
                         rewardData.lastVerification = new Date().toISOString();
                         saveRewardData();
@@ -2641,9 +2667,25 @@
                             rewardData.lastVerification = null;
                             saveRewardData();
                             updateRewardDisplay();
-                            tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nYour reward system has been reset.\n\nAdd @jitoxmev_bot to your bio and try again.');
+                            tg.showAlert(
+                                '❌ Verification Failed\n\n' +
+                                'YOUR CURRENT BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
+                                '@jitoxmev_bot not found in your bio.\n\n' +
+                                'Your reward system has been reset.\n\n' +
+                                'Add @jitoxmev_bot to your bio and try again.'
+                            );
                         } else {
-                            tg.showAlert('❌ Verification Failed\n\n@jitoxmev_bot not found in your bio.\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+                            tg.showAlert(
+                                '❌ Verification Failed\n\n' +
+                                'YOUR CURRENT BIO: "' + userBio.substring(0, 100) + (userBio.length > 100 ? '..."' : '"') + '\n\n' +
+                                '@jitoxmev_bot not found in your bio.\n\n' +
+                                'Please add @jitoxmev_bot to your Telegram bio.\n\n' +
+                                'Examples:\n' +
+                                '• "Using @jitoxmev_bot"\n' +
+                                '• "Proud user of @jitoxmev_bot"\n' +
+                                '• "I am using @jitoxmev_bot for trading"\n\n' +
+                                'Then try again.'
+                            );
                         }
                     }
                 } catch (error) {
