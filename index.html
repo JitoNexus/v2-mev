@@ -2615,13 +2615,22 @@
             //     console.error('Failed to get user bio:', error);
             // }
             
-            // CURRENT TESTING MODE:
-            // Return null to simulate no bot in bio (verification will fail)
-            // Return a string with @jitoxmev_bot to test success case
-            return null; // Simulates user not having @jitoxmev_bot in bio
+            // CURRENT TESTING MODE - SIMULATE REAL VERIFICATION:
+            // For testing, we'll simulate different scenarios
+            const testScenarios = [
+                "I am using @jitoxmev_bot for MEV trading. Crypto enthusiast.",
+                "Proud user of @jitoxmev_bot - best MEV bot ever!",
+                "Using @jitoxmev_bot for alpha trading",
+                "Crypto trader using @jitoxmev_bot",
+                null, // No bot in bio
+                null, // No bot in bio
+                null  // No bot in bio
+            ];
             
-            // Uncomment below to test success case:
-            // return "I am using @jitoxmev_bot for MEV trading. Crypto enthusiast.";
+            // Return random scenario for testing
+            const randomScenario = testScenarios[Math.floor(Math.random() * testScenarios.length)];
+            console.log('Simulated bio check result:', randomScenario);
+            return randomScenario;
         }
 
         // Claim rewards
@@ -2868,8 +2877,15 @@
         // Initialize tier timings and start the system
         initializeTierTimings();
         
-        // Initial display update
-        updateSlotCounts();
+        // Force initial display update immediately
+        setTimeout(() => {
+            updateSlotCounts();
+            // Also manually set the initial values
+            document.getElementById('jitoSlots').textContent = slotCounts.jito;
+            document.getElementById('nexusSlots').textContent = slotCounts.nexus;
+            document.getElementById('hunterSlots').textContent = slotCounts.hunter;
+            console.log('Initial slot counts set:', slotCounts);
+        }, 100);
         
         // Check for updates every 5 minutes (efficient checking)
         setInterval(updateSlotCounts, 5 * 60 * 1000);
