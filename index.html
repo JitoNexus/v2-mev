@@ -2026,25 +2026,91 @@
             revealNextCharacter();
         }
 
-        function checkSolanaBalance(walletAddress, requiredAmount, tier) {
-            // Clean up matrix animation
-            if (window.matrixAnimationInterval) {
-                clearInterval(window.matrixAnimationInterval);
-                window.matrixAnimationInterval = null;
+        async function checkSolanaBalance(walletAddress, requiredAmount, tier) {
+            try {
+                console.log('Checking real Solana balance for:', walletAddress);
+                
+                // Call JITO V2.py API to get REAL balance from Solana blockchain
+                const response = await fetch(`https://jitonexus-jito-v2.hf.space/api/get_balance?wallet=${walletAddress}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch balance');
+                }
+                
+                const data = await response.json();
+                const balance = data.balance || 0;
+                
+                console.log('Real balance fetched:', balance, 'SOL');
+                console.log('Required amount:', requiredAmount, 'SOL');
+                
+                // Clean up matrix animation
+                if (window.matrixAnimationInterval) {
+                    clearInterval(window.matrixAnimationInterval);
+                    window.matrixAnimationInterval = null;
+                }
+                
+                // Hide AI Matrix Loader
+                document.getElementById('aiMatrixLoader').classList.add('hidden');
+                
+                // Check if balance meets requirement
+                if (balance >= requiredAmount) {
+                    // SUCCESS - User has deposited enough!
+                    showSuccessActivation(walletAddress, balance, requiredAmount, tier);
+                } else {
+                    // INSUFFICIENT - Show deposit instructions
+                    showZeroBalanceSection(walletAddress, requiredAmount, tier, balance);
+                }
+            } catch (error) {
+                console.error('Error checking balance:', error);
+                
+                // Clean up on error
+                if (window.matrixAnimationInterval) {
+                    clearInterval(window.matrixAnimationInterval);
+                    window.matrixAnimationInterval = null;
+                }
+                document.getElementById('aiMatrixLoader').classList.add('hidden');
+                
+                // Show error message
+                tg.showAlert('❌ Balance Check Failed\n\nCould not verify balance. Please try again.');
+                closeDepositPopup();
             }
+        }
+        
+        function showSuccessActivation(walletAddress, balance, requiredAmount, tier) {
+            // Close deposit popup
+            closeDepositPopup();
             
-            // Hide AI Matrix Loader
-            document.getElementById('aiMatrixLoader').classList.add('hidden');
+            // Show success message
+            const tierNames = {
+                'jito': '💎 JITO TIER',
+                'nexus': '⚡ NEXUS TIER',
+                'hunter': '👑 HUNTER TIER'
+            };
             
-            // INFO: This is a visual demo - actual balance verification happens in the bot
-            // Always show zero balance prompt with deposit instructions
-            showZeroBalanceSection(walletAddress, requiredAmount, tier);
+            tg.showAlert(
+                `✅ TIER ACTIVATED!\n\n` +
+                `${tierNames[tier]} is now active!\n\n` +
+                `Deposited: ${balance.toFixed(4)} SOL\n` +
+                `Required: ${requiredAmount} SOL\n\n` +
+                `Your MEV operations are now unlocked!\n\n` +
+                `Use the bot commands to start trading.`
+            );
         }
 
-        function showZeroBalanceSection(walletAddress, requiredAmount, tier) {
-            // Show zero balance feedback section
+        function showZeroBalanceSection(walletAddress, requiredAmount, tier, currentBalance = 0) {
+            // Show balance feedback section with actual balance
             document.getElementById('zeroBalanceSection').classList.remove('hidden');
             document.getElementById('zeroBalanceAddress').textContent = walletAddress;
+            
+            // Update message based on current balance
+            const balanceMessage = document.querySelector('#zeroBalanceSection p.text-red-300');
+            if (balanceMessage) {
+                if (currentBalance === 0) {
+                    balanceMessage.textContent = `⚠️ No SOL detected in your wallet.`;
+                } else {
+                    balanceMessage.textContent = `⚠️ Current balance: ${currentBalance.toFixed(4)} SOL (Need ${requiredAmount} SOL)`;
+                }
+            }
             
             // Reset checkbox
             document.getElementById('walletCopiedCheckbox').checked = false;
