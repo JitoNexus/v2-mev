@@ -2767,47 +2767,104 @@
         `;
         document.head.appendChild(style);
 
-        // Dynamic Slot Management System
+        // Advanced Dynamic Slot Management System - Marketing Genius Edition
         let slotCounts = {
             jito: 28,    // 3 SOL tier - higher slots (more accessible)
             nexus: 12,   // 5 SOL tier - medium slots 
             hunter: 7    // 10 SOL tier - lower slots (premium)
         };
 
+        // Strategic timing for each tier (in milliseconds)
+        const tierTimings = {
+            jito: {
+                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum
+                maxInterval: 4 * 60 * 60 * 1000,    // 4 hours maximum
+                nextUpdate: 0
+            },
+            nexus: {
+                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum  
+                maxInterval: 6 * 60 * 60 * 1000,    // 6 hours maximum
+                nextUpdate: 0
+            },
+            hunter: {
+                minInterval: 1 * 60 * 60 * 1000,    // 1 hour minimum
+                maxInterval: 2 * 60 * 60 * 1000,    // 2 hours maximum (most premium, fastest turnover)
+                nextUpdate: 0
+            }
+        };
+
+        // Initialize next update times for each tier
+        function initializeTierTimings() {
+            Object.keys(tierTimings).forEach(tier => {
+                const timing = tierTimings[tier];
+                const randomInterval = Math.random() * (timing.maxInterval - timing.minInterval) + timing.minInterval;
+                timing.nextUpdate = Date.now() + randomInterval;
+                console.log(`${tier.toUpperCase()} tier next update in ${Math.round(randomInterval / (60 * 1000))} minutes`);
+            });
+        }
+
         function updateSlotCounts() {
-            // Update each tier's slot count
+            const now = Date.now();
+            
             Object.keys(slotCounts).forEach(tier => {
+                const timing = tierTimings[tier];
                 const currentSlots = slotCounts[tier];
                 
-                // If slots reach 1, randomly increase to create urgency
-                if (currentSlots <= 1) {
-                    // Different ranges for each tier
-                    if (tier === 'jito') {
-                        slotCounts[tier] = Math.floor(Math.random() * 15) + 8; // 8-22 slots
-                    } else if (tier === 'nexus') {
-                        slotCounts[tier] = Math.floor(Math.random() * 8) + 5;  // 5-12 slots
-                    } else if (tier === 'hunter') {
-                        slotCounts[tier] = Math.floor(Math.random() * 5) + 3;  // 3-7 slots
+                // Check if it's time to update this tier
+                if (now >= timing.nextUpdate) {
+                    console.log(`Updating ${tier.toUpperCase()} tier slots...`);
+                    
+                    // If slots reach 1, randomly increase to create urgency
+                    if (currentSlots <= 1) {
+                        // Different ranges for each tier based on premium level
+                        if (tier === 'jito') {
+                            slotCounts[tier] = Math.floor(Math.random() * 15) + 8; // 8-22 slots
+                        } else if (tier === 'nexus') {
+                            slotCounts[tier] = Math.floor(Math.random() * 8) + 5;  // 5-12 slots
+                        } else if (tier === 'hunter') {
+                            slotCounts[tier] = Math.floor(Math.random() * 5) + 3;  // 3-7 slots
+                        }
+                        console.log(`${tier.toUpperCase()} tier slots increased to ${slotCounts[tier]}`);
+                    } else {
+                        // Strategic slot decrease based on tier premium level
+                        let decreaseChance, decreaseAmount;
+                        
+                        if (tier === 'jito') {
+                            decreaseChance = 0.4;  // 40% chance (most accessible)
+                            decreaseAmount = Math.floor(Math.random() * 2) + 1; // 1-2 slots
+                        } else if (tier === 'nexus') {
+                            decreaseChance = 0.3;  // 30% chance (medium premium)
+                            decreaseAmount = Math.floor(Math.random() * 2) + 1; // 1-2 slots
+                        } else if (tier === 'hunter') {
+                            decreaseChance = 0.2;  // 20% chance (most premium, slower turnover)
+                            decreaseAmount = 1; // Always 1 slot (premium scarcity)
+                        }
+                        
+                        if (Math.random() < decreaseChance) {
+                            slotCounts[tier] = Math.max(1, currentSlots - decreaseAmount);
+                            console.log(`${tier.toUpperCase()} tier slots decreased by ${decreaseAmount} to ${slotCounts[tier]}`);
+                        }
                     }
-                } else {
-                    // Randomly decrease slots (simulate people joining)
-                    const decreaseChance = Math.random();
-                    if (decreaseChance < 0.3) { // 30% chance to decrease
-                        slotCounts[tier] = Math.max(1, currentSlots - Math.floor(Math.random() * 3) - 1);
+                    
+                    // Update the display
+                    const slotElement = document.getElementById(`${tier}Slots`);
+                    if (slotElement) {
+                        slotElement.textContent = slotCounts[tier];
                     }
-                }
-                
-                // Update the display
-                const slotElement = document.getElementById(`${tier}Slots`);
-                if (slotElement) {
-                    slotElement.textContent = slotCounts[tier];
+                    
+                    // Schedule next update for this tier
+                    const randomInterval = Math.random() * (timing.maxInterval - timing.minInterval) + timing.minInterval;
+                    timing.nextUpdate = now + randomInterval;
+                    console.log(`${tier.toUpperCase()} tier next update in ${Math.round(randomInterval / (60 * 1000))} minutes`);
                 }
             });
         }
 
-        // Initialize slot counts and start dynamic updates
-        updateSlotCounts();
-        setInterval(updateSlotCounts, 15000); // Update every 15 seconds
+        // Initialize tier timings and start the system
+        initializeTierTimings();
+        
+        // Check for updates every 5 minutes (efficient checking)
+        setInterval(updateSlotCounts, 5 * 60 * 1000);
 
         // Initialize reward system
         loadRewardData();
