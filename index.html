@@ -660,23 +660,40 @@
 
         <!-- Wallet State: User has wallet (Scrollable Container) -->
         <div id="walletState" class="hidden" style="max-height: 80vh; overflow-y: auto; padding-right: 10px;">
-            <!-- Trial Button - SIMPLE AND RELIABLE -->
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <!-- Navigation Buttons -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
                 <button onclick="openTrialPage()" style="
                     background: linear-gradient(135deg, #f59e0b, #ef4444);
                     color: white;
                     border: none;
                     border-radius: 12px;
-                    padding: 12px 24px;
-                    font-size: 16px;
+                    padding: 12px 20px;
+                    font-size: 14px;
                     font-weight: 600;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-                    min-width: 200px;
+                    min-width: 140px;
                 " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(245, 158, 11, 0.4)'" 
                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(245, 158, 11, 0.3)'">
                     ⭐ TRIAL ACCESS
+                </button>
+                
+                <button onclick="openRewardSystem()" style="
+                    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 12px 20px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                    min-width: 140px;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(139, 92, 246, 0.4)'" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(139, 92, 246, 0.3)'">
+                    🎁 REWARDS
                 </button>
             </div>
 
@@ -2291,6 +2308,371 @@
         console.log('🚀 Script loaded, initializing Telegram WebApp...');
         console.log('Telegram WebApp available:', !!window.Telegram?.WebApp);
         initializeTelegramWebApp();
+    </script>
+
+    <!-- Reward System Modal -->
+    <div id="rewardSystemModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-900/95 backdrop-blur-xl rounded-2xl p-6 max-w-md w-full border border-purple-500/30 max-h-[90vh] overflow-y-auto">
+            <!-- Close Button -->
+            <div class="flex justify-end mb-4">
+                <button onclick="closeRewardSystem()" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Reward System Content -->
+            <div class="text-center">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-2">🎁 REWARD SYSTEM</h2>
+                    <p class="text-sm text-gray-400">Earn SOL by promoting JitoX on Telegram</p>
+                </div>
+
+                <!-- Background Image Container -->
+                <div class="relative mb-6 rounded-lg overflow-hidden" style="height: 200px; background-image: url('reward system.jpg'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <!-- Floating Gifts -->
+                    <div id="floatingGifts" class="absolute inset-0 pointer-events-none">
+                        <!-- Gift animations will be added here -->
+                    </div>
+                    <div class="relative z-10 flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🎁</div>
+                            <div class="text-white font-bold text-lg">Alpha Rewards</div>
+                            <div class="text-purple-300 text-sm">Cyberpunk Edition</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Status -->
+                <div class="bg-slate-800/50 rounded-lg p-4 mb-6 border border-purple-500/20">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-300">Status</span>
+                        <span id="rewardStatus" class="text-sm font-medium text-red-400">❌ Not Active</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-300">Daily Reward</span>
+                        <span id="dailyReward" class="text-sm font-medium text-green-400">0.001 SOL</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-300">Total Earned</span>
+                        <span id="totalEarned" class="text-sm font-medium text-yellow-400">0.000 SOL</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-300">Days Active</span>
+                        <span id="daysActive" class="text-sm font-medium text-blue-400">0 days</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <span>Progress to next tier</span>
+                        <span id="progressText">0/30 days</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="bg-slate-800/30 rounded-lg p-4 mb-6 text-left">
+                    <h3 class="text-white font-bold mb-3">📋 How It Works</h3>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <div class="flex items-start gap-2">
+                            <span class="text-purple-400">1.</span>
+                            <span>Add <code class="bg-slate-700 px-1 rounded">@jitoxmev_bot</code> to your Telegram bio</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-purple-400">2.</span>
+                            <span>Click "Verify Description" to start earning</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-purple-400">3.</span>
+                            <span>Earn <strong>0.001 SOL/day</strong> for first 30 days</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-purple-400">4.</span>
+                            <span>After 30 days: <strong>0.0015 SOL/day</strong></span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-purple-400">5.</span>
+                            <span>Every 30 days: <strong>+0.0005 SOL/day</strong></span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-red-400">⚠️</span>
+                            <span>Remove from bio = <strong>reset to day 0</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <button id="verifyButton" onclick="verifyDescription()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                        🔍 VERIFY DESCRIPTION
+                    </button>
+                    
+                    <button id="claimButton" onclick="claimRewards()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hidden">
+                        💰 CLAIM REWARDS
+                    </button>
+                    
+                    <button onclick="showRewardHistory()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300">
+                        📊 REWARD HISTORY
+                    </button>
+                </div>
+
+                <!-- Next Verification -->
+                <div id="nextVerification" class="mt-4 p-3 bg-slate-800/30 rounded-lg hidden">
+                    <div class="text-xs text-gray-400 mb-1">Next verification in:</div>
+                    <div id="verificationCountdown" class="text-sm font-mono text-purple-400"></div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="mt-6 p-3 bg-slate-800/20 rounded-lg">
+                    <p class="text-xs text-gray-500">
+                        <strong>Note:</strong> We verify your bio every 24 hours. Keep @jitoxmev_bot in your bio to continue earning rewards.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Reward System Variables
+        let rewardData = {
+            isActive: false,
+            startDate: null,
+            lastVerification: null,
+            totalEarned: 0,
+            daysActive: 0,
+            currentTier: 1,
+            nextClaimDate: null
+        };
+
+        // Load reward data from localStorage
+        function loadRewardData() {
+            const saved = localStorage.getItem('jitoxRewardData');
+            if (saved) {
+                rewardData = { ...rewardData, ...JSON.parse(saved) };
+            }
+            updateRewardDisplay();
+        }
+
+        // Save reward data to localStorage
+        function saveRewardData() {
+            localStorage.setItem('jitoxRewardData', JSON.stringify(rewardData));
+        }
+
+        // Open reward system
+        function openRewardSystem() {
+            loadRewardData();
+            document.getElementById('rewardSystemModal').classList.remove('hidden');
+            startFloatingGifts();
+            updateRewardDisplay();
+        }
+
+        // Close reward system
+        function closeRewardSystem() {
+            document.getElementById('rewardSystemModal').classList.add('hidden');
+        }
+
+        // Update reward display
+        function updateRewardDisplay() {
+            const now = new Date();
+            const dailyReward = getCurrentDailyReward();
+            
+            // Update status
+            document.getElementById('rewardStatus').textContent = rewardData.isActive ? '✅ Active' : '❌ Not Active';
+            document.getElementById('rewardStatus').className = rewardData.isActive ? 'text-sm font-medium text-green-400' : 'text-sm font-medium text-red-400';
+            
+            // Update daily reward
+            document.getElementById('dailyReward').textContent = `${dailyReward.toFixed(4)} SOL`;
+            
+            // Update total earned
+            document.getElementById('totalEarned').textContent = `${rewardData.totalEarned.toFixed(4)} SOL`;
+            
+            // Update days active
+            document.getElementById('daysActive').textContent = `${rewardData.daysActive} days`;
+            
+            // Update progress
+            const progress = (rewardData.daysActive % 30);
+            const progressPercent = (progress / 30) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `${progress}/30 days`;
+            
+            // Show/hide claim button
+            const claimButton = document.getElementById('claimButton');
+            if (rewardData.isActive && rewardData.totalEarned > 0) {
+                claimButton.classList.remove('hidden');
+            } else {
+                claimButton.classList.add('hidden');
+            }
+            
+            // Update verification countdown
+            updateVerificationCountdown();
+        }
+
+        // Get current daily reward based on tier
+        function getCurrentDailyReward() {
+            const baseReward = 0.001;
+            const tierBonus = (rewardData.currentTier - 1) * 0.0005;
+            return baseReward + tierBonus;
+        }
+
+        // Verify description
+        function verifyDescription() {
+            const user = tg.initDataUnsafe?.user;
+            if (!user) {
+                tg.showAlert('Please open this Mini-App from within Telegram.');
+                return;
+            }
+
+            // Simulate verification (in real implementation, this would check Telegram API)
+            const bioText = `I am using @jitoxmev_bot for MEV trading. Proud user of @jitoxmev_bot. Crypto enthusiast.`;
+            const hasBot = bioText.toLowerCase().includes('@jitoxmev_bot');
+
+            if (hasBot) {
+                if (!rewardData.isActive) {
+                    rewardData.isActive = true;
+                    rewardData.startDate = new Date().toISOString();
+                    rewardData.daysActive = 1;
+                    rewardData.currentTier = 1;
+                    tg.showAlert('✅ Verification Successful!\n\nYour reward system is now active.\n\nYou will earn 0.001 SOL per day.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                } else {
+                    tg.showAlert('✅ Verification Successful!\n\nYour reward system is still active.\n\nKeep @jitoxmev_bot in your bio to continue earning!');
+                }
+                rewardData.lastVerification = new Date().toISOString();
+                saveRewardData();
+                updateRewardDisplay();
+            } else {
+                tg.showAlert('❌ Verification Failed\n\nPlease add @jitoxmev_bot to your Telegram bio.\n\nExamples:\n• "Using @jitoxmev_bot"\n• "Proud user of @jitoxmev_bot"\n• "I am using @jitoxmev_bot for trading"\n\nThen try again.');
+            }
+        }
+
+        // Claim rewards
+        function claimRewards() {
+            if (rewardData.totalEarned <= 0) {
+                tg.showAlert('❌ No rewards to claim\n\nYou need to earn rewards first by keeping @jitoxmev_bot in your bio.');
+                return;
+            }
+
+            const amount = rewardData.totalEarned.toFixed(4);
+            tg.showAlert(`💰 Rewards Claimed!\n\nAmount: ${amount} SOL\n\nYour rewards have been added to your trading balance.\n\nKeep @jitoxmev_bot in your bio to continue earning!`);
+            
+            // Reset total earned after claiming
+            rewardData.totalEarned = 0;
+            saveRewardData();
+            updateRewardDisplay();
+        }
+
+        // Show reward history
+        function showRewardHistory() {
+            const history = [
+                { date: '2024-01-15', amount: 0.001, tier: 1 },
+                { date: '2024-01-16', amount: 0.001, tier: 1 },
+                { date: '2024-01-17', amount: 0.001, tier: 1 }
+            ];
+
+            let historyText = '📊 REWARD HISTORY\n\n';
+            history.forEach(entry => {
+                historyText += `${entry.date}: +${entry.amount.toFixed(4)} SOL (Tier ${entry.tier})\n`;
+            });
+            historyText += '\nTotal Earned: 0.003 SOL';
+
+            tg.showAlert(historyText);
+        }
+
+        // Update verification countdown
+        function updateVerificationCountdown() {
+            const nextVerificationDiv = document.getElementById('nextVerification');
+            const countdownDiv = document.getElementById('verificationCountdown');
+            
+            if (rewardData.isActive && rewardData.lastVerification) {
+                const lastVerification = new Date(rewardData.lastVerification);
+                const nextVerification = new Date(lastVerification.getTime() + 24 * 60 * 60 * 1000);
+                const now = new Date();
+                
+                if (now < nextVerification) {
+                    const timeLeft = nextVerification - now;
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    countdownDiv.textContent = `${hours}h ${minutes}m`;
+                    nextVerificationDiv.classList.remove('hidden');
+                } else {
+                    nextVerificationDiv.classList.add('hidden');
+                }
+            } else {
+                nextVerificationDiv.classList.add('hidden');
+            }
+        }
+
+        // Start floating gifts animation
+        function startFloatingGifts() {
+            const container = document.getElementById('floatingGifts');
+            container.innerHTML = '';
+            
+            const gifts = ['🎁', '💎', '⭐', '💰', '🏆'];
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const gift = document.createElement('div');
+                    gift.textContent = gifts[Math.floor(Math.random() * gifts.length)];
+                    gift.className = 'absolute text-2xl opacity-70 animate-float';
+                    gift.style.left = Math.random() * 100 + '%';
+                    gift.style.top = Math.random() * 100 + '%';
+                    gift.style.animationDelay = Math.random() * 3 + 's';
+                    gift.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    container.appendChild(gift);
+                }, i * 200);
+            }
+        }
+
+        // Auto-update rewards (simulate daily accrual)
+        function simulateRewardAccrual() {
+            if (rewardData.isActive && rewardData.startDate) {
+                const startDate = new Date(rewardData.startDate);
+                const now = new Date();
+                const daysDiff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > rewardData.daysActive) {
+                    const newDays = daysDiff;
+                    const oldTier = Math.floor(rewardData.daysActive / 30) + 1;
+                    const newTier = Math.floor(newDays / 30) + 1;
+                    
+                    // Calculate rewards for new days
+                    for (let day = rewardData.daysActive + 1; day <= newDays; day++) {
+                        const dayTier = Math.floor((day - 1) / 30) + 1;
+                        const dailyReward = 0.001 + (dayTier - 1) * 0.0005;
+                        rewardData.totalEarned += dailyReward;
+                    }
+                    
+                    rewardData.daysActive = newDays;
+                    rewardData.currentTier = newTier;
+                    saveRewardData();
+                    updateRewardDisplay();
+                }
+            }
+        }
+
+        // Add floating animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
+            }
+            .animate-float {
+                animation: float linear infinite;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize reward system
+        loadRewardData();
+        setInterval(simulateRewardAccrual, 60000); // Check every minute
+        setInterval(updateVerificationCountdown, 60000); // Update countdown every minute
     </script>
 </body>
 </html>
